@@ -22,7 +22,37 @@ debugger;
         this.map.getAreaNeighbors();
     }
 
-    getAreas(): Area[] {
-        return this.map.areas;
+    getTerritories(): Territory[] {
+        this.map.areas.forEach((area, index) => area.id = index);
+        const territories = this.map.areas.map(createTerritory);
+        territories.forEach((territory, index) => {
+            territory.neighbors = this.map.areas[index].neighbors.map((n, i) => territories[i]);
+        });
+
+        return territories;
+    }
+
+    createTerritory(area: Area): Territory {
+        const p = new Path2D();
+        for(let i = 0; i < area.outline.length; i++) {
+            if (i === 0) {
+                p.moveTo(area.outline[i].x, outline[i].y);
+            } else {
+                p.lineTo(area.outline[i].x, outline[i].y);
+            }
+        }
+
+        return new Territory(area.id, p);
+    }
+}
+
+class Territory {
+    color: string;
+    selected: boolean = false;
+    active: boolean = true;
+    weight: number = 0;
+    neighbors: Territory[] = [];
+
+    constructor(public readonly id: number, public readonly path: Path2D) {
     }
 }

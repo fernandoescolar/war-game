@@ -4,7 +4,7 @@ import Point from "./Point";
 import Random from "./Random";
 
 export default class Area {
-    id: string;
+    id: number;
     hexagons: Hexagon[] = [];
     neighbors: Area[] = [];
     outline: Point[] = [];
