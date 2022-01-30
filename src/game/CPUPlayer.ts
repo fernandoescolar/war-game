@@ -1,14 +1,15 @@
 import { Action } from "./types";
 import Player from "./Player";
-import { skip } from "./Actions";
-
+import Ai from "../ai/Ai";
 
 export default class CPUPlayer extends Player {
-    constructor(id: number, color: string) {
+    constructor(id: number, color: string, protected readonly ai: Ai) {
         super(id, color);
+        ai.setPlayer(this);
+        this.interactive = false;
     }
 
     getAction(): Promise<Action> {
-        return new Promise(resolve => resolve(skip()));
+        return this.ai.getAction();
     }
 }

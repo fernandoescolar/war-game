@@ -6,11 +6,13 @@ import Board from "./Board";
 import HumanPlayer from "./HumanPlayer";
 import CPUPlayer from "./CPUPlayer";
 import CanvasInput from "../input/CanvasInput";
+import SimpleAi from "../ai/SimpleAi";
 
 export default class Game {
     players: Player[] = [];
     board: Board;
     currentPlayerIndex: number = 0;
+    currentSuccessfullAttackMovements: number = 0;
 
     get currentPlayer(): Player {
         return this.players[this.currentPlayerIndex];
@@ -28,10 +30,13 @@ export default class Game {
 
         this.board.new();
         this.board.assignTerritories(this.players);
-        this.board.assignInitialArmies(this.players, 20);
+        this.board.assignInitialArmies(this.players, this.configuration.initialArmies);
     }
 
-    skip(): void {
+    async skip(): Promise<void> {
+        const armiesToAdd = Math.floor((this.currentSuccessfullAttackMovements + this.currentPlayer.territories.length) / 2);
+        await this.board.assignPlayerArmies(this.currentPlayer, armiesToAdd, 200);
+        this.currentSuccessfullAttackMovements = 0;
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         if (this.currentPlayer.territories.length === 0) {
             this.skip();
@@ -60,6 +65,7 @@ export default class Game {
 
     apply(movement: Movement): void {
         if (movement.attack.value > movement.defense.value) {
+            this.currentSuccessfullAttackMovements++;
             movement.defender.armies = movement.attacker.armies - 1;
             this.currentPlayer.setTerritory(movement.defender);
         }
@@ -70,7 +76,7 @@ export default class Game {
     private createPlayers(): Player[] {
         return this.configuration.colors.players.map((color, index) =>
         index === 0 ? new HumanPlayer(index, color, this.input)
-                    : new CPUPlayer(index, color))
+                    : new CPUPlayer(index, color, new SimpleAi(this)))
     }
 
     private shufflePlayers(): void {

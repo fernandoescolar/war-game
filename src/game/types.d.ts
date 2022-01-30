@@ -20,6 +20,8 @@ export type Configuration ={
     areaSizeVariance: number,
     useDistortion: boolean,
     useCompactShapes: boolean,
+    maxArmies: number,
+    initialArmies: number,
     colors: {
         players: string[],
         disabled: string,

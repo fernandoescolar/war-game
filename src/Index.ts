@@ -11,6 +11,8 @@ const configuration: Configuration = {
     areaSizeVariance: 0.1,
     useDistortion: true,
     useCompactShapes: true,
+    maxArmies: 10,
+    initialArmies: 20,
     colors: {
         players: [ '#ef476f', '#ffd166', '#06d6a0', '#593837', '#2B59C3' ],
         disabled: '#2D3047',
@@ -46,16 +48,26 @@ const gameIsRunning = (): boolean => {
 async function gameStep() {
     if (!gameIsRunning()) return;
 
+    const delay = game.currentPlayer.interactive ? 1000 : 200;
     const action = await game.currentPlayer.getAction();
     if ((action as ActionSkip).skip) {
-        game.skip();
-        gameStep();
+        status.innerHTML = `<span style="color: ${game.currentPlayer.color};"> Player ${game.currentPlayer.id}</span> skips turn`;
+        setTimeout(async () => {
+            status.innerHTML = `<span style="color: ${game.currentPlayer.color};"> Player ${game.currentPlayer.id}</span> adding armies`;
+            await game.skip();
+            await gameStep();
+        }, delay);
+
         return;
     }
 
     const attack = action as ActionAttack;
     const movement = game.attact(attack.source, attack.target);
-    status.innerHTML += '<br>to: ' + movement.defender.id + `(<span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span>`;
+    attack.source.selected = true;
+    attack.source.active = false;
+    attack.target.selected = true;
+    attack.target.active = false;
+    status.innerHTML += `<br>to: ${movement.defender.id} (<span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span>)`;
     setTimeout(() => {
         status.innerHTML += `<br><span style="color: ${movement.attacker.color};">${movement.attack.value}</span> vs. <span style="color: ${movement.defender.color};">${movement.defense.value}</span>`;
         if (movement.attack.value > movement.defense.value) {
@@ -68,8 +80,8 @@ async function gameStep() {
             game.apply(movement);
             game.board.resetState();
             gameStep();
-        }, 1000);
-    }, 1000);
+        }, delay);
+    }, delay);
 }
 
 const draw = () => {

@@ -14,11 +14,20 @@ $color10: #0C0F0A; //lines
   position: fixed;
   bottom: 10px;
   left: 10px;
+  font-family: 'Super Mario';
+  font-size: 20px;
   width: 100%;
+  background-attachment: rgba(0, 0, 0, 0.0);
+  pointer-events: none;
 }
 
 #skip {
   position: fixed;
   top: 10px;
   left: 300px;
+  font-family: 'Super Mario';
+  font-size: 20px;
+  border: 2px solid $color10;
+  background-color: $color09;
+  color: $color01;
 }
