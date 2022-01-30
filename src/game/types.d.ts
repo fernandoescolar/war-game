@@ -15,6 +15,8 @@ export type Action = ActionAttack | ActionSkip;
 export type Configuration ={
     width: number,
     height: number,
+    offsetX: number,
+    offsetY: number,
     hexagonSize: number,
     numberOfAreas: number,
     areaSizeVariance: number,

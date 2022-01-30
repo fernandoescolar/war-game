@@ -3,9 +3,21 @@ import Game from "./game/Game";
 import GameRenderer from "./renderers/GameRenderer";
 import CanvasInput from "./input/CanvasInput";
 
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+// make canvas responsive
+const width = window.innerWidth;
+const height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+
+
 const configuration: Configuration = {
-    width: 350,
-    height: 630 ,
+    width: Math.min(350, canvas.width),
+    height: Math.min(630, canvas.height),
+    offsetX: 10,
+    offsetY: 10,
     hexagonSize: 30,
     numberOfAreas: 30,
     areaSizeVariance: 0.1,
@@ -25,8 +37,8 @@ const configuration: Configuration = {
     font: '14px Verdana'
 };
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+configuration.offsetX = Math.max(10, canvas.width - configuration.width) / 2;
+configuration.offsetY = 10;
 
 const input = new CanvasInput(context);
 const game = new Game(configuration, input);
@@ -52,10 +64,18 @@ async function gameStep() {
     const action = await game.currentPlayer.getAction();
     if ((action as ActionSkip).skip) {
         status.innerHTML = `<span style="color: ${game.currentPlayer.color};"> Player ${game.currentPlayer.id}</span> skips turn`;
-        setTimeout(async () => {
+        setTimeout(() => {
             status.innerHTML = `<span style="color: ${game.currentPlayer.color};"> Player ${game.currentPlayer.id}</span> adding armies`;
-            await game.skip();
-            await gameStep();
+            const armies = game.beforeSkip();
+            renderer.armiesToAdd = armies;
+            game.board.disableAll();
+            game.currentPlayer.territories.forEach(territory => territory.active = true);
+            setTimeout(() => {
+                renderer.armiesToAdd = [];
+                game.skip(armies);
+                game.board.resetState();
+                gameStep();
+            }, delay * 1.5);
         }, delay);
 
         return;
@@ -67,13 +87,13 @@ async function gameStep() {
     attack.source.active = false;
     attack.target.selected = true;
     attack.target.active = false;
-    status.innerHTML += `<br>to: ${movement.defender.id} (<span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span>)`;
+    status.innerHTML += `<br>to: ${movement.defender.id} (<span style="color: ${movement.defender.color};">Player ${movement.defender.player?.id}</span>)`;
     setTimeout(() => {
         status.innerHTML += `<br><span style="color: ${movement.attacker.color};">${movement.attack.value}</span> vs. <span style="color: ${movement.defender.color};">${movement.defense.value}</span>`;
         if (movement.attack.value > movement.defense.value) {
-            status.innerHTML += `<br><span style="color: ${movement.attacker.color};">Player ${movement.attacker.player.id}</span> wins!`;
+            status.innerHTML += `<br><span style="color: ${movement.attacker.color};">Player ${movement.attacker.player?.id}</span> wins!`;
         } else {
-            status.innerHTML += `<br><span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span> wins!`;
+            status.innerHTML += `<br><span style="color: ${movement.defender.color};">Player ${movement.defender.player?.id}</span> wins!`;
         }
 
         setTimeout(() => {
@@ -92,4 +112,4 @@ const draw = () => {
 window.requestAnimationFrame(draw);
 
 game.new();
-await gameStep();
+gameStep();

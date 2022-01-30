@@ -23,30 +23,33 @@ export default class Board {
             let armies = armiesPerPlayer - player.territories.length;
             player.territories.forEach(territory => territory.armies = 1);
 
-            this.assignPlayerArmies(player, armies);
+            var operation = this.createAssignArmiesOperation(player, armies);
+            this.applyAssignArmiesOperation(player, operation);
         });
     }
 
-    async assignPlayerArmies(player: Player, armiesToAdd: number, delay: number = 0): Promise<void> {
-        let armies = armiesToAdd;
+    createAssignArmiesOperation(player: Player, armies: number): number[] {
+        const result = Array(player.territories.length).fill(0);
         while (armies > 0) {
-            const territory = player.territories[Random.next(0, player.territories.length - 1)];
-            if (player.territories.findIndex(x => x.armies < this.configuration.maxArmies) < 0) return;
-            if (territory.armies >= this.configuration.maxArmies) continue;
-            if (delay > 0) {
-                this.disableAll();
-                territory.active = true;
-                await Board.wait(delay);
-                territory.armies++;
-                armies--;
-                await Board.wait(delay);
-            } else {
-                territory.armies++;
-                armies--;
+            if (this.playerIsFull(player, result)) {
+                break;
             }
+
+            const index = Random.next(0, player.territories.length - 1);
+            const territory = player.territories[index];
+            if (territory.armies >= this.configuration.maxArmies) continue;
+
+            result[index]++;
+            armies--;
         }
 
-        this.resetState();
+        return result;
+    }
+
+    applyAssignArmiesOperation(player: Player, armies: number[]): void {
+        for (let i = 0; i < player.territories.length; i++) {
+            player.territories[i].armies += armies[i];
+        }
     }
 
     resetState(): void {
@@ -74,6 +77,18 @@ export default class Board {
         territory.selected = true;
     }
 
+    private playerIsFull(player: Player, armiesToAdd: number[]): boolean {
+        let result = true;
+        for (let i = 0; i < player.territories.length; i++) {
+            if (player.territories[i].armies + armiesToAdd[i] < this.configuration.maxArmies) {
+                result = false;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     private static createMap(configuration: Configuration): Territory[] {
         const generator = new MapGenerator();
         generator.createHexagonPattern(
@@ -89,10 +104,6 @@ export default class Board {
             configuration.useCompactShapes
         );
 
-        return generator.getTerritories();
-    }
-
-    private static async wait(ms: number): Promise<void> {
-        return new Promise<void>(resolve => setTimeout(resolve, ms));
+        return generator.getTerritories(configuration.offsetX, configuration.offsetY);
     }
 }

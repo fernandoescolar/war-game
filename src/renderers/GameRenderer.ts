@@ -6,6 +6,8 @@ import TerritoryRenderer from "./TerritoryRenderer";
 export default class BoardRenderer {
     private territoryRenderer: TerritoryRenderer;
 
+    armiesToAdd: number[] = [];
+
     private get board(): Board {
         return this.game.board;
     }
@@ -19,7 +21,7 @@ export default class BoardRenderer {
     }
 
     draw(context: CanvasRenderingContext2D): void {
-        context.clearRect(0, 0, this.configuration.width, this.configuration.height);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
         this.drawFirstLayer(context);
         this.drawSecondLayer(context);
         this.drawThirdLayer(context);
@@ -40,6 +42,16 @@ export default class BoardRenderer {
     }
 
     private drawThirdLayer(context: CanvasRenderingContext2D): void {
-        this.board.territories.forEach(territory => this.territoryRenderer.drawThirdLayer(territory, context));
+        this.board.territories.forEach(territory => {
+            this.territoryRenderer.drawThirdLayer(territory, context);
+            if (this.armiesToAdd.length > 0) {
+                const index = this.game.currentPlayer.territories.indexOf(territory);
+                if (index >= 0 && this.armiesToAdd[index] > 0) {
+                    //context.font = this.configuration.font;
+                    context.fillStyle = this.configuration.colors.seleted;
+                    context.fillText('+' + this.armiesToAdd[index], territory.center.x - 12, territory.center.y + 14);
+                }
+            }
+        });
     }
 }

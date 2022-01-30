@@ -33,13 +33,17 @@ export default class Game {
         this.board.assignInitialArmies(this.players, this.configuration.initialArmies);
     }
 
-    async skip(): Promise<void> {
+    beforeSkip(): number[] {
         const armiesToAdd = Math.floor((this.currentSuccessfullAttackMovements + this.currentPlayer.territories.length) / 2);
-        await this.board.assignPlayerArmies(this.currentPlayer, armiesToAdd, 200);
+        return this.board.createAssignArmiesOperation(this.currentPlayer, armiesToAdd);
+    }
+
+    skip(armiesToAdd: number[]): void {
+        this.board.applyAssignArmiesOperation(this.currentPlayer, armiesToAdd);
         this.currentSuccessfullAttackMovements = 0;
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         if (this.currentPlayer.territories.length === 0) {
-            this.skip();
+            this.skip([]);
         }
     }
 
