@@ -1,0 +1,24 @@
+$color01: #fffcf9; // bg
+$color02: #ef476f;
+$color03: #ffd166;
+$color04: #06d6a0;
+$color05: #2B59C3;
+//$color06: #320E3B;
+$color07: #593837;
+//$color08: #084B83;
+$color09: #2D3047; // disabled
+$color10: #0C0F0A; //lines
+
+
+#status {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 100%;
+}
+
+#skip {
+  position: fixed;
+  top: 10px;
+  left: 300px;
+}

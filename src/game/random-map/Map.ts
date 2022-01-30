@@ -1,6 +1,6 @@
-import Point from "./Point";
-import Line from "./Line";
-import Hexagon from "./Hexagon";
+import Point from "../primitives/Point";
+import Line from "../primitives/Line";
+import Hexagon from "../primitives/Hexagon";
 import Area from "./Area";
 import Random from "./Random";
 
@@ -105,7 +105,7 @@ export default class Map {
             }
         }
 
-        // hexagonNeighbors
+        // hexagonneighbours
         let leftBorder = true;
         let topBorder = true;
         let rightBorder = false;
@@ -123,35 +123,35 @@ export default class Map {
                 }
 
                 if (!leftBorder) {
-                    this.hexagons[index].neighbors.push(this.hexagons[index - 1]);
+                    this.hexagons[index].neighbours.push(this.hexagons[index - 1]);
                 }
 
                 if (!rightBorder) {
-                    this.hexagons[index].neighbors.push(this.hexagons[index + 1]);
+                    this.hexagons[index].neighbours.push(this.hexagons[index + 1]);
                 }
 
                 if (!topBorder) {
-                    this.hexagons[index].neighbors.push(this.hexagons[index - numberOfHexagonsInARow]);
+                    this.hexagons[index].neighbours.push(this.hexagons[index - numberOfHexagonsInARow]);
                     if ((i % 2) === 1) {
                         if (!rightBorder) {
-                            this.hexagons[index].neighbors.push(this.hexagons[index + 1 - numberOfHexagonsInARow]);
+                            this.hexagons[index].neighbours.push(this.hexagons[index + 1 - numberOfHexagonsInARow]);
                         }
                     } else {
                         if (!leftBorder) {
-                            this.hexagons[index].neighbors.push(this.hexagons[index - 1 - numberOfHexagonsInARow]);
+                            this.hexagons[index].neighbours.push(this.hexagons[index - 1 - numberOfHexagonsInARow]);
                         }
                     }
                 }
 
                 if (!bottomBorder) {
-                    this.hexagons[index].neighbors.push(this.hexagons[index + numberOfHexagonsInARow]);
+                    this.hexagons[index].neighbours.push(this.hexagons[index + numberOfHexagonsInARow]);
                     if ((i % 2) === 1) {
                         if (!rightBorder) {
-                            this.hexagons[index].neighbors.push(this.hexagons[index + 1 + numberOfHexagonsInARow]);
+                            this.hexagons[index].neighbours.push(this.hexagons[index + 1 + numberOfHexagonsInARow]);
                         }
                     } else {
                         if (!leftBorder) {
-                            this.hexagons[index].neighbors.push(this.hexagons[index - 1 + numberOfHexagonsInARow]);
+                            this.hexagons[index].neighbours.push(this.hexagons[index - 1 + numberOfHexagonsInARow]);
                         }
                     }
                 }
@@ -178,10 +178,10 @@ export default class Map {
                 return false;
             }
 
-            for (let j = 0; j < freeHexagons[i].neighbors.length; j++) {
-                if (!freeHexagons[i].neighbors[j].used) {
-                    if (freeHexagons.indexOf(freeHexagons[i].neighbors[j]) < 0) {
-                        freeHexagons.push(freeHexagons[i].neighbors[j]);
+            for (let j = 0; j < freeHexagons[i].neighbours.length; j++) {
+                if (!freeHexagons[i].neighbours[j].used) {
+                    if (freeHexagons.indexOf(freeHexagons[i].neighbours[j]) < 0) {
+                        freeHexagons.push(freeHexagons[i].neighbours[j]);
                     }
                 }
             }
@@ -201,14 +201,12 @@ export default class Map {
         return false;
     }
 
-    generateArea(id: string, neighborArea: Area | null, size: number, useCompactShapes: boolean): Area {
+    generateArea(neighbourArea: Area | null, size: number, useCompactShapes: boolean): Area {
         const area = new Area();
-        area.id = id;
-
         let startHexagon: Hexagon;
-        if (neighborArea != null) {
+        if (neighbourArea != null) {
             do {
-                startHexagon = neighborArea.getRandomNeighborHexagon(true);
+                startHexagon = neighbourArea.getRandomneighbourHexagon(true);
                 if (!startHexagon) {
                     throw 'Epic Fail';
                 }
@@ -222,7 +220,7 @@ export default class Map {
         area.hexagons.push(startHexagon);
         this.usedHexagons.push(startHexagon);
         for (let i = 1; i < size; i++) {
-            const newHexagon = area.getRandomNeighborHexagon(useCompactShapes);
+            const newHexagon = area.getRandomneighbourHexagon(useCompactShapes);
             newHexagon.used = true;
             area.hexagons.push(newHexagon);
             this.usedHexagons.push(newHexagon);
@@ -243,14 +241,14 @@ export default class Map {
             if (this.areas.length > 0) {
                 const globalArea = new Area();
                 globalArea.hexagons = this.usedHexagons;
-                this.areas.push(this.generateArea(i.toString(), globalArea, areaSize, useCompactShapes));
+                this.areas.push(this.generateArea(globalArea, areaSize, useCompactShapes));
             } else {
-                this.areas.push(this.generateArea(i.toString(), null, areaSize, useCompactShapes));
+                this.areas.push(this.generateArea(null, areaSize, useCompactShapes));
             }
         }
     }
 
-    getAreaNeighbors(): void {
+    getAreaneighbours(): void {
         for (let i = 0, ii = this.areas.length; i < ii; i++) {
             const areaOutline = this.areas[i].outline;
             for (let j = i + 1; j < ii; j++) {
@@ -261,8 +259,8 @@ export default class Map {
 
                     for (let k = 0, kk = this.areas[j].outline.length; k < kk; k += 2) {
                         if (areaOutline.indexOf(this.areas[j].outline[k]) >= 0) {
-                            this.areas[i].neighbors.push(this.areas[j]);
-                            this.areas[j].neighbors.push(this.areas[i]);
+                            this.areas[i].neighbours.push(this.areas[j]);
+                            this.areas[j].neighbours.push(this.areas[i]);
                             break;
                         }
                     }
@@ -286,7 +284,7 @@ export default class Map {
                     }
 
                     while (holeHexagons.length > 0) {
-                        const hexagon = holeHexagons.pop();
+                        const hexagon = holeHexagons.pop() as Hexagon;
                         area.hexagons.push(hexagon);
                         for (let j = 0; j < 6; j++) {
                             if (area.inlines.indexOf(hexagon.lines[j]) < 0) {
@@ -298,9 +296,9 @@ export default class Map {
                             }
                         }
 
-                        for (let j = 0, jj = hexagon.neighbors.length; j < jj; j++) {
-                            if (area.hexagons.indexOf(hexagon.neighbors[j]) < 0) {
-                                holeHexagons.push(hexagon.neighbors[j]);
+                        for (let j = 0, jj = hexagon.neighbours.length; j < jj; j++) {
+                            if (area.hexagons.indexOf(hexagon.neighbours[j]) < 0) {
+                                holeHexagons.push(hexagon.neighbours[j]);
                             }
                         }
                     }

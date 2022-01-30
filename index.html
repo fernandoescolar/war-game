@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>war-game</title>
-    <script data-main="index" src="require.js"></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/src/style.scss">
+    <title>Vite App</title>
+  </head>
+  <body>
     <canvas id="canvas" width="360" height="640"></canvas>
-	<script src="index.js"></script>
-    <script src="main.js"></script>
-</body>
+	<button id="skip">Skip</button>
+	<div id="status"></div>
+    <script type="module" src="/src/index.ts"></script>
+  </body>
 </html>

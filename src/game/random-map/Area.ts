@@ -1,40 +1,40 @@
-import Hexagon from "./Hexagon";
-import Line from "./Line";
-import Point from "./Point";
+import Hexagon from "../primitives/Hexagon";
+import Line from "../primitives/Line";
+import Point from "../primitives/Point";
 import Random from "./Random";
 
 export default class Area {
-    id: number;
+    id!: number;
     hexagons: Hexagon[] = [];
-    neighbors: Area[] = [];
+    neighbours: Area[] = [];
     outline: Point[] = [];
     inlines: Line[] = [];
-    center: Point;
-    boundingBox: {min: Point, max: Point};
-    holeLines: Line[] | undefined = undefined;
+    center!: Point;
+    boundingBox!: {min: Point, max: Point};
+    holeLines!: Line[];
 
-    getRandomNeighborHexagon(useCompactShapes: boolean): Hexagon {
+    getRandomneighbourHexagon(useCompactShapes: boolean): Hexagon {
         if (useCompactShapes) {
             while (true) {
                 const hexagon = this.hexagons[Random.next(0, this.hexagons.length - 1)];
-                const neighborHexagon = hexagon.neighbors[Random.next(0, hexagon.neighbors.length - 1)];
-                if (!neighborHexagon.used)
-                    return neighborHexagon;
+                const neighbourHexagon = hexagon.neighbours[Random.next(0, hexagon.neighbours.length - 1)];
+                if (!neighbourHexagon.used)
+                    return neighbourHexagon;
             }
         }
         else {
-            const neighborHexagons: Hexagon[] = [];
+            const neighbourHexagons: Hexagon[] = [];
             for (let i = 0; i < this.hexagons.length; i++) {
-                for (let j = 0; j < this.hexagons[i].neighbors.length; j++) {
-                    if (!this.hexagons[i].neighbors[j].used) {
-                        if (neighborHexagons.indexOf(this.hexagons[i].neighbors[j]) < 0) {
-                            neighborHexagons.push(this.hexagons[i].neighbors[j]);
+                for (let j = 0; j < this.hexagons[i].neighbours.length; j++) {
+                    if (!this.hexagons[i].neighbours[j].used) {
+                        if (neighbourHexagons.indexOf(this.hexagons[i].neighbours[j]) < 0) {
+                            neighbourHexagons.push(this.hexagons[i].neighbours[j]);
                         }
                     }
                 }
             }
 
-            return neighborHexagons[Random.next(0, neighborHexagons.length -1)];
+            return neighbourHexagons[Random.next(0, neighbourHexagons.length -1)];
         }
     }
 
@@ -77,7 +77,7 @@ export default class Area {
             isConnected = false;
             for (let i = 0, ii = connectedHexagons.length; i < ii; i++) {
                 for (let j = 0, jj = hexagons.length; j < jj; j++) {
-                    if (hexagons[j].neighbors.indexOf(connectedHexagons[i]) >= 0) {
+                    if (hexagons[j].neighbours.indexOf(connectedHexagons[i]) >= 0) {
                         connectedHexagons.push(hexagons[j]);
                         hexagons.splice(j, 1);
                         isConnected = true;
@@ -194,13 +194,13 @@ export default class Area {
         // no triplePoints: set center in middle of a hexagon
         if (triplePoints.length < 1) {
             for (let  i = 0, ii = this.hexagons.length; i < ii; i++) {
-                let inAreaNeighbors = 0;
+                let inAreaneighbours = 0;
                 for (let j = 0; j < 6; j++) {
-                    if (this.hexagons.indexOf(this.hexagons[i].neighbors[j]) >= 0) {
-                        inAreaNeighbors++;
+                    if (this.hexagons.indexOf(this.hexagons[i].neighbours[j]) >= 0) {
+                        inAreaneighbours++;
 
-                        // use a hexagon as center with 3 neighbors
-                        if (inAreaNeighbors === 3) {
+                        // use a hexagon as center with 3 neighbours
+                        if (inAreaneighbours === 3) {
                             for (let k = 0; k < 6; k++) {
                                 sumX += this.hexagons[i].lines[k].points[0].x + this.hexagons[i].lines[k].points[1].x;
                                 sumY += this.hexagons[i].lines[k].points[0].y + this.hexagons[i].lines[k].points[1].y;
@@ -212,7 +212,7 @@ export default class Area {
                 }
             }
 
-            // if there is no hexagon with 3 neighbors, use first
+            // if there is no hexagon with 3 neighbours, use first
             for (let i = 0; i < 6; i++) {
                 sumX += this.hexagons[0].lines[i].points[0].x + this.hexagons[0].lines[i].points[1].x;
                 sumY += this.hexagons[0].lines[i].points[0].y + this.hexagons[0].lines[i].points[1].y;
@@ -262,7 +262,7 @@ export default class Area {
 
             const centerPoint = new Point(sumX / pointField.length, sumY / pointField.length);
             let minDistance = Infinity;
-            let j: number;
+            let j = 0;
             if (pointField.length < 7) {
                 return centerPoint;
             }
@@ -311,7 +311,7 @@ export default class Area {
 
         const centerPoint = new Point(sumX / hexagonField.length, sumY / hexagonField.length);
         let minDistance = Infinity;
-        let j: number;
+        let j = 0;
         if (hexagonField.length < 7) {
             return centerPoint;
         }

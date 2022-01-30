@@ -1,8 +1,9 @@
 import Area from './Area';
 import Map from './Map';
+import Territory from '../Territory';
 
 export default class MapGenerator {
-    map: Map | undefined = undefined;
+    map!: Map;
 
     createHexagonPattern(mapWidth: number, mapHeight: number, hexagonSize: number, useDistortion: boolean): void {
         this.map = new Map(mapWidth, mapHeight, hexagonSize);
@@ -13,20 +14,20 @@ export default class MapGenerator {
         if (this.map === undefined) {
             throw "call MapGenerator.createHexagonPattern() before generating";
         }
-debugger;
+
         this.map.clear();
         this.map.normalGenerator(numberOfAreas, areaSizeVariance, useCompactShapes);
         this.map.calculateOutlines();
         this.map.deleteAreaHoles();
         this.map.calculateCenters();
-        this.map.getAreaNeighbors();
+        this.map.getAreaneighbours();
     }
 
     getTerritories(): Territory[] {
         this.map.areas.forEach((area, index) => area.id = index);
-        const territories = this.map.areas.map(createTerritory);
+        const territories = this.map.areas.map(this.createTerritory);
         territories.forEach((territory, index) => {
-            territory.neighbors = this.map.areas[index].neighbors.map((n, i) => territories[i]);
+            territory.neighbours = this.map.areas[index].neighbours.map(n => territories[n.id]);
         });
 
         return territories;
@@ -36,23 +37,12 @@ debugger;
         const p = new Path2D();
         for(let i = 0; i < area.outline.length; i++) {
             if (i === 0) {
-                p.moveTo(area.outline[i].x, outline[i].y);
+                p.moveTo(area.outline[i].x, area.outline[i].y);
             } else {
-                p.lineTo(area.outline[i].x, outline[i].y);
+                p.lineTo(area.outline[i].x, area.outline[i].y);
             }
         }
 
-        return new Territory(area.id, p);
-    }
-}
-
-class Territory {
-    color: string;
-    selected: boolean = false;
-    active: boolean = true;
-    weight: number = 0;
-    neighbors: Territory[] = [];
-
-    constructor(public readonly id: number, public readonly path: Path2D) {
+        return new Territory(area.id, p, area.center);
     }
 }

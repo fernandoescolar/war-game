@@ -1,75 +1,83 @@
-import MapGenerator from "./MapGenerator";
+import type { ActionAttack, ActionSkip, Configuration } from "./game/types";
+import Game from "./game/Game";
+import GameRenderer from "./renderers/GameRenderer";
+import CanvasInput from "./input/CanvasInput";
 
-const width = 360;
-const height = 640 ;
-const hexagonSize = 30;
-const numberOfAreas = 42;
-const areaSizeVariance = 0.5;
-const useDistortion = true;
-const showCentersAndConnection = true;
-const useCompactShapes = true;
-const generator = new MapGenerator();
-generator.createHexagonPattern(
-    width,
-    height,
-    hexagonSize,
-    useDistortion
-);
-
-generator.generate(
-    numberOfAreas,
-    areaSizeVariance,
-    useCompactShapes
-);
+const configuration: Configuration = {
+    width: 350,
+    height: 630 ,
+    hexagonSize: 30,
+    numberOfAreas: 30,
+    areaSizeVariance: 0.1,
+    useDistortion: true,
+    useCompactShapes: true,
+    colors: {
+        players: [ '#ef476f', '#ffd166', '#06d6a0', '#593837', '#2B59C3' ],
+        disabled: '#2D3047',
+        seleted: '#0C0F0A',
+        line: '#0C0F0A',
+        text: '#fffcf9',
+        shadow: "#2D3047",
+        bg: '#fffcf9'
+    },
+    font: '14px Verdana'
+};
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-// canvas.width = width;
-// canvas.height = height;
-// canvas.style.width = width + 'px';
-// canvas.style.height = height  + 'px';
-// document.body.appendChild(canvas);
-// canvas.onclick = function (event)
-// {
-//     if ((event as any).region) {
-//         alert('You clicked ' + (event as any).region);
-//     }
-// }
+const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-const context = canvas.getContext("2d");
+const input = new CanvasInput(context);
+const game = new Game(configuration, input);
+const renderer = new GameRenderer(game);
 
-//window.requestAnimationFrame(draw);
-draw();
-function draw(): void {
-    context.clearRect(0, 0, width, height);
-
-    const areas = generator.getAreas();
-    for(let i = 0; i < areas.length; i++) {
-        const area = areas[i];
-        context.beginPath();
-        context.moveTo(area.outline[0].x, area.outline[0].y);
-        for(let j = 1; j < area.outline.length; j++) {
-            context.lineTo(area.outline[j].x, area.outline[j].y);
-        }
-        context.lineTo(area.outline[0].x, area.outline[0].y);
-        context.closePath();
-        context.fillStyle = "rgba(0, 255, 0, 1)";
-        context.strokeStyle = "rgba(0, 0, 0, 1)";
-        context.stroke();
-        context.fill();
-        // context.isPointInPath()
-        // (context as any).addHitRegion({id: area.id});
+const status = document.getElementById("status") as HTMLDivElement;
+const gameIsRunning = (): boolean => {
+    const winner = game.getWinner();
+    if (winner) {
+        status.innerHTML = `<span style="color: ${winner.color};"> Player ${winner.id}</span> wins the game!`;
+        return false;
     }
-}
-// generator.getAreas().forEach(area => {
-//     debugger;
-//     context.beginPath();
-//     context.fillStyle = 'gray';
-//     context.strokeStyle = 'black';
-//     context.moveTo(area.outline[0].x, area.outline[0].y);
-//     area.outline.forEach(point => {
-//         context.lineTo(point.x, point.y);
-//     });
-//     context.closePath();
-//     context.fill();
 
-// });
+    status.innerHTML = `Turn for: <span style="color: ${game.currentPlayer.color};"> Player ${game.currentPlayer.id}</span>`;
+
+    return true;
+}
+
+async function gameStep() {
+    if (!gameIsRunning()) return;
+
+    const action = await game.currentPlayer.getAction();
+    if ((action as ActionSkip).skip) {
+        game.skip();
+        gameStep();
+        return;
+    }
+
+    const attack = action as ActionAttack;
+    const movement = game.attact(attack.source, attack.target);
+    status.innerHTML += '<br>to: ' + movement.defender.id + `(<span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span>`;
+    setTimeout(() => {
+        status.innerHTML += `<br><span style="color: ${movement.attacker.color};">${movement.attack.value}</span> vs. <span style="color: ${movement.defender.color};">${movement.defense.value}</span>`;
+        if (movement.attack.value > movement.defense.value) {
+            status.innerHTML += `<br><span style="color: ${movement.attacker.color};">Player ${movement.attacker.player.id}</span> wins!`;
+        } else {
+            status.innerHTML += `<br><span style="color: ${movement.defender.color};">Player ${movement.defender.player.id}</span> wins!`;
+        }
+
+        setTimeout(() => {
+            game.apply(movement);
+            game.board.resetState();
+            gameStep();
+        }, 1000);
+    }, 1000);
+}
+
+const draw = () => {
+    renderer.draw(context);
+    window.requestAnimationFrame(draw);
+}
+
+window.requestAnimationFrame(draw);
+
+game.new();
+await gameStep();
