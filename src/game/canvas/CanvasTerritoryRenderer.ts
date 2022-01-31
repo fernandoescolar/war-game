@@ -1,9 +1,15 @@
 import type { Configuration } from "../game/types";
 import Territory from "../game/Territory";
 import Point from "../game/primitives/Point";
+import Random from "../game/random-map/Random";
+import IAnimation from "./IAnimation";
+import NewArmyAnimation from "./NewArmyAnimation";
+import PointsAnimation from "./PointsAnimation";
 
 export default class CanvasTerritoryRenderer {
     readonly path: Path2D;
+    private lastArmies: number = 0;
+    private animations: IAnimation[] = [];
 
     get center(): Point {
         return new Point(this.territory.center.x + this.configuration.offsetX, this.territory.center.y + this.configuration.offsetY);
@@ -53,13 +59,40 @@ export default class CanvasTerritoryRenderer {
     drawThirdLayer() : void {
         if (!this.active && !this.selected) return;
 
-        this.context.font = this.configuration.font;
-        this.context.fillStyle = this.configuration.colors.text;
-        this.context.fillText(this.armies.toString(), this.center.x, this.center.y);
+        const armies = this.animations.length === 0 ? this.armies : this.lastArmies;
+        this.lastArmies = armies;
+        this.context.font = `${this.configuration.fontSize}px ${this.configuration.fontFamily}`;
+        this.context.fillStyle = this.selected ? this.color : this.configuration.colors.text;
+        this.context.fillText(armies.toString(), this.center.x, this.center.y);
         if (this.selected) {
-            this.context.strokeStyle = this.color;
             this.context.lineWidth = 1;
-            this.context.strokeText(this.armies.toString(), this.center.x, this.center.y);
+            this.context.strokeStyle = this.configuration.colors.bg;
+            this.context.strokeText(armies.toString(), this.center.x, this.center.y);
         }
+
+        this.animations.forEach(army => army.draw(this.context));
+    }
+
+    addNewArmies(armies: number, millis: number): void {
+        Array(armies).fill(0).forEach(()=> {
+            const source = new Point(Random.next(0, this.configuration.width), -20);
+            const target = this.center;
+            const speed = Random.next(100, millis);
+            this.animations.push(new NewArmyAnimation(source, target, speed, this.color));
+        });
+    }
+
+    showPoints(points: number, millis: number) {
+        this.animations.push(new PointsAnimation(points, this.center, 20, 100, millis, this.color, this.configuration));
+    }
+
+    update(delta: number): void {
+        this.animations.forEach(army => army.update(delta));
+        let finished = this.animations.filter(army => army.finished);
+        finished.forEach(army => {
+            this.lastArmies++;
+            this.animations.splice(this.animations.indexOf(army), 1);
+        });
     }
 }
+

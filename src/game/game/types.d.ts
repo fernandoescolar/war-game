@@ -33,7 +33,8 @@ export type Configuration ={
         shadow: string,
         bg: string
     },
-    font: string
+    fontFamily: string,
+    fontSize: number
 }
 
 export type Movement ={

@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.modal {
-  transition: opacity 0.25s ease;
+@font-face {
+  font-family: 'Super Mario';
+  src: local('Super Mario'), url(@/assets/SuperMario.ttf) format('truetype');
 }
 
-body.modal-active {
-  overflow-x: hidden;
-  overflow-y: visible !important;
+h1 {
+  font-family: 'Super Mario';
+  font-size: 2em !important;
+}
+.modal {
+  transition: opacity 0.25s ease;
 }

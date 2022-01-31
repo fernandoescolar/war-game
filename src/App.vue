@@ -2,6 +2,8 @@
 import Header from '@/components/Header.vue'
 import Game from '@/components/Game.vue'
 import About from '@/components/About.vue'
+import Configure from './components/Configure.vue';
+import Statistics from './components/Statistics.vue';
 </script>
 
 <template>
@@ -14,6 +16,8 @@ import About from '@/components/About.vue'
     </div>
   </div>
   <About />
+  <Configure />
+  <Statistics />
 </template>
 
 <style lang="scss">

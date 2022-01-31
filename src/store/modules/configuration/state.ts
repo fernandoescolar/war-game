@@ -23,5 +23,6 @@ export const state: State = {
         shadow: '#2D3047',
         bg: '#fffcf9'
     },
-    font: '14px Verdana'
+    fontSize: 14,
+    fontFamily: 'Super Mario'
 }

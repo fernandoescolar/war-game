@@ -66,6 +66,7 @@ export default class CanvasInput implements IInput {
 
         if (!this.selected) {
             if (target.player !== this.game.currentPlayer) return;
+            if (target.armies <= 0) return;
 
             this.game.board.selectAttackerTerritory(target);
             this.selected = target;
