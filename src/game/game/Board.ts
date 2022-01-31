@@ -37,7 +37,7 @@ export default class Board {
 
             const index = Random.next(0, player.territories.length - 1);
             const territory = player.territories[index];
-            if (territory.armies >= this.configuration.maxArmies) continue;
+            if (territory.armies + result[index] >= this.configuration.maxArmies) continue;
 
             result[index]++;
             armies--;
@@ -104,6 +104,6 @@ export default class Board {
             configuration.useCompactShapes
         );
 
-        return generator.getTerritories(configuration.offsetX, configuration.offsetY);
+        return generator.getTerritories();
     }
 }

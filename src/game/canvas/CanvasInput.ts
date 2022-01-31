@@ -2,23 +2,26 @@ import type { Action } from "../game/types";
 import { attack, skip } from "../game/Actions";
 import Game from "../game/Game";
 import Territory from "../game/Territory";
+import IInput from "../IInput";
+import CanvasRenderer from "./CanvasRenderer";
 
 type PromiseResolver = (value: Action) => void;
 type MouseEventHandler = (event: MouseEvent) => void;
 
-export default class CanvasInput {
-    private game: Game | undefined;
-    private selected: Territory | null = null;
+export default class CanvasInput implements IInput {
+    game!: Game;
+    selected: Territory | null = null;
 
-    constructor(private readonly context: CanvasRenderingContext2D) {
+    constructor(private readonly renderer: CanvasRenderer, private readonly skip: HTMLElement) {
     }
 
-    setGame(game: Game): void {
+    initialize(game: Game): void {
         this.game = game;
+        this.skip.style.display = 'none';
     }
 
     getAction(): Promise<Action> {
-        const skip = document.getElementById('skip');
+        this.skip.style.display = 'block';
 
         let callback: MouseEventHandler;
         let skipCallback: MouseEventHandler;
@@ -26,12 +29,13 @@ export default class CanvasInput {
         return new Promise((resolve: PromiseResolver) => {
             callback = this.canvasHandler(resolve);
             skipCallback = this.skipHandler(resolve);
-            this.context.canvas.addEventListener('click', callback);
-            skip?.addEventListener('click', skipCallback);
+            this.renderer.context.canvas.addEventListener('click', callback);
+            this.skip.addEventListener('click', skipCallback);
         }).finally(() => {
-            this.context.canvas.removeEventListener('click', callback);
-            skip?.removeEventListener('click', skipCallback);
+            this.renderer.context.canvas.removeEventListener('click', callback);
+            this.skip.removeEventListener('click', skipCallback);
             this.selected = null;
+            this.skip.style.display = 'none';
         });
     }
 
@@ -52,8 +56,8 @@ export default class CanvasInput {
 
         const x = event.offsetX;
         const y = event.offsetY;
-        const target = this.game?.board.territories.find(territory => this.context.isPointInPath(territory.path, x, y));
-
+        const targetRenderer = this.renderer.territories.find(territory => this.renderer.context.isPointInPath(territory.path, x, y));
+        const target = targetRenderer ? targetRenderer.territory : null;
         if (!target || target === this.selected) {
             this.selected = null;
             this.game.board.resetState();
@@ -65,7 +69,6 @@ export default class CanvasInput {
 
             this.game.board.selectAttackerTerritory(target);
             this.selected = target;
-            this.log('<br>Attack from: ' + this.selected.id);
             return;
         }
 

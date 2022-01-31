@@ -1,6 +1,6 @@
 import type { Action } from "./types";
 import Player from "./Player";
-import CanvasInput from "../input/CanvasInput";
+import CanvasInput from "../IInput";
 
 export default class HumanPlayer extends Player {
     constructor(id: number, color: string, private input: CanvasInput) {

@@ -5,7 +5,7 @@ import Territory from "./Territory";
 import Board from "./Board";
 import HumanPlayer from "./HumanPlayer";
 import CPUPlayer from "./CPUPlayer";
-import CanvasInput from "../input/CanvasInput";
+import IInput from "../IInput";
 import SimpleAi from "../ai/SimpleAi";
 
 export default class Game {
@@ -18,9 +18,9 @@ export default class Game {
         return this.players[this.currentPlayerIndex];
     }
 
-    constructor(public configuration: Configuration, private readonly input: CanvasInput) {
+    constructor(public configuration: Configuration, private readonly input: IInput) {
         this.board = new Board(configuration);
-        input.setGame(this);
+        input.initialize(this);
     }
 
     new(): void {

@@ -9,6 +9,6 @@ export default class Territory {
     neighbours: Territory[] = [];
     player: Player | undefined = undefined;
 
-    constructor(public readonly id: number, public readonly path: Path2D, public readonly center: Point) {
+    constructor(public readonly id: number, public readonly outline: Point[], public readonly center: Point) {
     }
 }
