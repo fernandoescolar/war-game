@@ -2,8 +2,11 @@
 import Header from '@/components/Header.vue'
 import Game from '@/components/Game.vue'
 import About from '@/components/About.vue'
-import Configure from './components/Configure.vue';
-import Statistics from './components/Statistics.vue';
+import Configure from '@/components/Configure.vue'
+import Statistics from '@/components/Statistics.vue'
+import { ConfigurationState, mapGetters } from '@/store'
+
+const { games } = mapGetters<ConfigurationState>('configuration')
 </script>
 
 <template>
@@ -11,7 +14,7 @@ import Statistics from './components/Statistics.vue';
     <div class="wrapper">
       <Header />
       <main>
-        <Game />
+        <Game v-if="games > 0" :key="games"/>
       </main>
     </div>
   </div>
@@ -21,13 +24,20 @@ import Statistics from './components/Statistics.vue';
 </template>
 
 <style lang="scss" scoped>
+:root {
+   --app-height: 100%;
+}
 .app {
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
+   /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+  height: var(--app-height);
   margin: 0;
   padding: 0;
 

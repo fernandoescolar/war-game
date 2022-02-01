@@ -19,8 +19,9 @@
 html, body {
   overflow-x: hidden;
 }
-body {
-  position: relative;
+
+html {
+  height: -webkit-fill-available;
 }
 
 body {

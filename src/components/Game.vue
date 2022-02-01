@@ -46,7 +46,8 @@ export default {
         let controller: GameController | undefined;
         let interval: NodeJS.Timer | undefined;
 
-        watch(toRefConfiguration.games, (value, old) => {
+        const start = () => {
+        //watch(toRefConfiguration.games, (value, old) => {
             if (!controller) {
                 return
             }
@@ -70,7 +71,8 @@ export default {
 
             controller.start()
             players.value = [ ...controller.players ]
-        })
+        //})
+        }
 
         onMounted(() => {
             if (canvas.value) {
@@ -81,6 +83,7 @@ export default {
                 const renderer = new CanvasRenderer(configuration, context)
                 const input = new CanvasInput(renderer, skip.value as HTMLElement)
                 controller = new GameController(renderer, input)
+                start()
             }
         })
 
