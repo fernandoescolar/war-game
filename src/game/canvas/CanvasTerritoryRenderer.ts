@@ -61,13 +61,13 @@ export default class CanvasTerritoryRenderer {
 
         const armies = this.animations.length === 0 ? this.armies : this.lastArmies;
         this.lastArmies = armies;
-        this.context.font = `${this.configuration.fontSize}px ${this.configuration.fontFamily}`;
+        this.context.font = `${this.configuration.fontSize} ${this.configuration.fontFamily}`;
         this.context.fillStyle = this.selected ? this.color : this.configuration.colors.text;
-        this.context.fillText(armies.toString(), this.center.x, this.center.y);
+        this.context.fillText(armies.toString(), this.center.x - 4, this.center.y + 4);
         if (this.selected) {
             this.context.lineWidth = 1;
             this.context.strokeStyle = this.configuration.colors.bg;
-            this.context.strokeText(armies.toString(), this.center.x, this.center.y);
+            this.context.strokeText(armies.toString(), this.center.x - 4, this.center.y + 4);
         }
 
         this.animations.forEach(army => army.draw(this.context));

@@ -16,7 +16,13 @@ export default abstract class Player {
         }
     }
 
-    abstract getAction(): Promise<Action>;
+    async getAction(): Promise<Action> {
+        const action = await this.getNextAction();
+        if (action.type === 'attack') this.moves++;
+        return action;
+    }
+
+    protected abstract getNextAction(): Promise<Action>;
 
     private contains(territory: Territory): boolean {
         return this.territories.indexOf(territory) >= 0;

@@ -9,7 +9,7 @@ export default class CPUPlayer extends Player {
         this.interactive = false;
     }
 
-    getAction(): Promise<Action> {
+    protected getNextAction(): Promise<Action> {
         return this.ai.getAction();
     }
 }

@@ -5,11 +5,15 @@ import { MutationTypes } from './mutations'
 import { State } from './state'
 
 export type Actions = {
-    SetValue(data: Configuration): void
+    SetValue(data: any): void,
+    StartNewGame(): void
 }
 
 export const actions: ActionTree<State, RootState> = {
-    async SetValue({ commit }, data: Configuration) {
+    async SetValue({ commit }, data: any) {
         commit(MutationTypes.SetConfiguration, data)
+    },
+    async StartNewGame({ commit }) {
+        commit(MutationTypes.IncrementGames)
     }
 }

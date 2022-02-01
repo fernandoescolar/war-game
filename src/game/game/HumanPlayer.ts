@@ -7,7 +7,7 @@ export default class HumanPlayer extends Player {
         super(id, color);
     }
 
-    getAction(): Promise<Action> {
+    protected getNextAction(): Promise<Action> {
         return this.input.getAction();
     }
 }

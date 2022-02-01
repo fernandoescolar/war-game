@@ -1,0 +1,26 @@
+@import "variables";
+
+:export{
+    player1: $player1;
+    player2: $player2;
+    player3: $player3;
+    player4: $player4;
+    player5: $player5;
+    player6: $player6;
+
+    background: $background;
+    accent: $accent;
+    selected: $selected;
+    disabled: $disabled;
+    lines: $lines;
+    text: $text;
+    gameText: $game-text;
+    shadow: $shadow;
+
+    fontFamily: $font-family;
+    fontSize: $font-size;
+    gameFontFamily: $game-font-family;
+    gameFontSize: $game-font-size;
+    titleFontFamily: $title-font-family;
+    titleFontSize: $title-font-size;
+}

@@ -78,9 +78,11 @@ export default class Game {
     }
 
     private createPlayers(): Player[] {
-        return this.configuration.colors.players.map((color, index) =>
-        index === 0 ? new HumanPlayer(index, color, this.input)
-                    : new CPUPlayer(index, color, new SimpleAi(this)))
+        return Array(this.configuration.numberOfPlayers).fill(null).map((_, index) => {
+            const color = this.configuration.colors.players[index];
+            return index === 0 ? new HumanPlayer(index, color, this.input)
+                            : new CPUPlayer(index, color, new SimpleAi(this));
+        });
     }
 
     private shufflePlayers(): void {

@@ -2,11 +2,13 @@ import DiceRoll from "./DiceRolling";
 import Territory from "./Territory";
 
 export type ActionAttack = {
+    type: 'attack',
     source: Territory,
     target: Territory
 };
 
 export type ActionSkip = {
+    type: 'skip',
     skip: boolean
 };
 
@@ -19,6 +21,7 @@ export type Configuration ={
     offsetY: number,
     hexagonSize: number,
     numberOfAreas: number,
+    numberOfPlayers: number,
     areaSizeVariance: number,
     useDistortion: boolean,
     useCompactShapes: boolean,
@@ -34,7 +37,7 @@ export type Configuration ={
         bg: string
     },
     fontFamily: string,
-    fontSize: number
+    fontSize: string
 }
 
 export type Movement ={

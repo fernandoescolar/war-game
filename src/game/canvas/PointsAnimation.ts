@@ -33,7 +33,7 @@ export default class PointsAnimation implements IAnimation {
         }
         this.lastMeasure = measure;
 
-        context.fillText(this.score.toString(), this.point.x, this.point.y);
-        context.strokeText(this.score.toString(), this.point.x, this.point.y);
+        context.fillText(this.score.toString(), this.point.x - 10, this.point.y + 10);
+        context.strokeText(this.score.toString(), this.point.x - 10, this.point.y + 10);
     }
 }

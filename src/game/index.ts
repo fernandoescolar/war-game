@@ -2,6 +2,7 @@ import type { ActionAttack, ActionSkip, Configuration } from "./game/types";
 import Game from "./game/Game";
 import IRenderer from "./IRenderer";
 import IInput from "./IInput";
+import Player from "./game/Player";
 
 function wait(millis: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, millis));
@@ -11,16 +12,40 @@ export default class GameController {
     game!: Game;
     status!: HTMLDivElement;
 
+    private sourceOffsetY: number = 0;
+
+    get players(): Player[] {
+        return this.game?.players ?? [];
+    }
+
+    get winner(): Player | undefined {
+        return this.game?.getWinner();
+    }
+
+    get currentPlayerId(): number {
+        return this.game?.currentPlayer?.id ?? -1;
+    }
+
     constructor(private readonly renderer: IRenderer, private readonly input: IInput) {
     }
 
-    async start(configuration: Configuration) {
+    initialize(configuration: Configuration): void {
         this.game = new Game(configuration, this.input);
         this.status = document.getElementById("status") as HTMLDivElement;
 
-        this.game.new();
         this.renderer.initialize(this.game);
         this.beginDraw();
+        this.sourceOffsetY = configuration.offsetY;
+    }
+
+    async start(): Promise<void> {
+        this.game.new();
+
+        // fix Y offset
+        const minY = Math.min(...this.game.board.territories.map(t => Math.min(...t.outline.map(p => p.y))));
+        this.game.configuration.offsetY = this.sourceOffsetY - minY;
+
+        this.renderer.initializeTerritories();
         await this.gameStep();
     }
 
@@ -44,7 +69,7 @@ export default class GameController {
         return true;
     };
 
-    private async gameStep() {
+    private async gameStep(): Promise<void> {
         if (!this.gameIsRunning()) return;
 
         const delay = this.game.currentPlayer.interactive ? 1000 : 200;

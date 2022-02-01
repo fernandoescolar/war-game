@@ -1,16 +1,78 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "variables";
 
 @font-face {
-  font-family: 'Super Mario';
-  src: local('Super Mario'), url(@/assets/SuperMario.ttf) format('truetype');
+  font-family: Zorque;
+  src: local('Zorque'), url(@/assets/zorque.otf) format("opentype");
+}
+
+@font-face {
+  font-family: Vectroid;
+  src: local('Vectroid'), url(@/assets/vectroid.ttf) format("truetype");
+}
+
+
+@font-face {
+  font-family: 'Rexlia';
+  src: local('Rexlia'), url(@/assets/rexlia.otf) format('opentype');
+}
+
+html, body {
+  overflow-x: hidden;
+}
+body {
+  position: relative;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $background;
+  color: $text;
+  font-family: $font-family;
+  font-size: $font-size;
 }
 
 h1 {
-  font-family: 'Super Mario';
-  font-size: 2em !important;
+  font-family: $title-font-family;
+  font-size: $title-font-size;
 }
-.modal {
-  transition: opacity 0.25s ease;
+
+button {
+  border: 0;
+  background: transparent;
+  color: $text;
+
+  &:hover {
+    color: $accent;
+  }
+}
+
+a {
+  color: $accent;
+
+  &:hover {
+    color: $text;
+  }
+}
+
+.center {
+  display: flex;
+  align-items: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 90%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: opacity .15s ease-in-out;
+    transition: opacity .15s ease-in-out;
 }

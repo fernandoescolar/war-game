@@ -10,25 +10,15 @@ export default class CanvasRenderer implements IRenderer {
 
     private lastDate: Date | undefined;
 
-    constructor(public readonly configuration: Configuration, public readonly context: CanvasRenderingContext2D) {
-        const width = Math.min(512, window.innerWidth);
-        const height = window.innerHeight - 150;
-        this.context.canvas.width = width;
-        this.context.canvas.height = height;
-        this.context.canvas.style.width = width + 'px';
-        this.context.canvas.style.height = height + 'px';
-        this.configuration.offsetX = Math.max(10, this.context.canvas.width - this.configuration.width) / 2;
-        this.configuration.offsetY = 10;
-        this.configuration.height = height - this.configuration.offsetY * 2;
+    constructor(public configuration: Configuration, public context: CanvasRenderingContext2D) {
     }
 
     initialize(game: Game): void {
         this.game = game;
+        this.configuration = this.game.configuration;
+    }
 
-        // fix Y offset
-        const minY = Math.min(...this.game.board.territories.map(t => Math.min(...t.outline.map(p => p.y))));
-        this.configuration.offsetY = this.configuration.offsetY - minY;
-
+    initializeTerritories(): void {
         this.territories = this.game.board.territories.map(territory => new CanvasTerritoryRenderer(territory, this.context, this.configuration));
     }
 

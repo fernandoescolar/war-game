@@ -1,6 +1,20 @@
-import { Configuration } from '@/game/game/types';
+import { Configuration } from '@/game/game/types'
+import styles from '@/sass/_exports.scss'
 
-export type State = Configuration
+const vars: any = {};
+styles.replace(/\"/g, '')
+      .replace(':export {', '')
+      .replace('}', '')
+      .replace(/\n/g, '')
+      .split(';')
+      .map(line => {
+        const [key, value] = line.split(':')
+        if (key && value) {
+            vars[key.trim()] = value.trim()
+        }
+      })
+
+export type State = Configuration & { games: number}
 
 export const state: State = {
     width: 350,
@@ -9,20 +23,22 @@ export const state: State = {
     offsetY: 10,
     hexagonSize: 30,
     numberOfAreas: 30,
+    numberOfPlayers: 6,
     areaSizeVariance: 0.1,
     useDistortion: true,
     useCompactShapes: true,
     maxArmies: 10,
     initialArmies: 20,
     colors: {
-        players: ['#ef476f', '#ffd166', '#06d6a0', '#593837', '#2B59C3'],
-        disabled: '#2D3047',
-        seleted: '#0C0F0A',
-        line: '#0C0F0A',
-        text: '#fffcf9',
-        shadow: '#2D3047',
-        bg: '#fffcf9'
+        players: [vars.player1, vars.player2, vars.player3, vars.player4, vars.player5, vars.player6 ],
+        disabled: vars.disabled,
+        seleted: vars.selected,
+        line: vars.lines,
+        text: vars.gameText,
+        shadow: vars.shadow,
+        bg: vars.background
     },
-    fontSize: 14,
-    fontFamily: 'Super Mario'
+    fontSize: vars.gameFontSize,
+    fontFamily: vars.gameFontFamily,
+    games: 0
 }

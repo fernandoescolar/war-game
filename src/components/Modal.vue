@@ -1,38 +1,24 @@
 <template>
-    <div :class="extraClasses + 'modal fixed w-full h-full top-0 left-0 flex items-center justify-center'">
-    <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-
-    <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-
-      <!-- Add margin if you want to see some of the overlay behind the modal-->
-      <div class="modal-content py-4 text-left px-6">
-        <!--Title-->
-        <div class="flex justify-between items-center pb-3">
-          <p class="text-2xl font-bold">{{ props.title }}</p>
-          <button class="modal-close cursor-pointer z-50" @click="ViewGame()">
-            <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-              <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+  <div :class="{ modal: true, hidden: !props.visible }">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="header">
+          <h1>{{ props.title }}</h1>
+          <button @click="ViewGame()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
           </button>
         </div>
-
-        <!--Body-->
-        <slot></slot>
-
-        <!--Footer-->
-        <!-- <div class="flex justify-end pt-2">
-          <button class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2">Action</button>
-          <button class="modal-close px-4 bg-indigo-500 p-3 rounded-lg text-white hover:bg-indigo-400">Close</button>
-        </div> -->
-
-      </div>
+        <div class="content">
+            <slot></slot>
+        </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { mapActions, mapGetters, ScreensActions, ScreensState } from '@/store'
-import { computed } from 'vue'
+import { mapActions, ScreensActions } from '@/store'
 
 const props = defineProps({
   title: {
@@ -45,6 +31,71 @@ const props = defineProps({
   }
 })
 const { ViewGame } = mapActions<ScreensActions>('screens')
-const extraClasses = computed(() => props.visible ? '' : 'opacity-0 pointer-events-none ')
-
 </script>
+
+<style lang="scss">
+.modal {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  transition: opacity .25s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: calc(100% - 2.8em);
+    margin: 0.4em;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    padding: 1em;
+
+    .header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      widows: 100%;
+
+      h1 {
+        margin: 0;
+        margin-right: 1em;
+        width: calc(100% - 20px - 0.4em)
+      }
+
+      button {
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .content {
+      overflow-y: auto;
+      height: calc(100% - 50px);
+      padding-top: 0.2em;
+      padding-bottom: 0.2em;
+    }
+  }
+}
+</style>

@@ -9,11 +9,11 @@ export type State = {
 }
 
 export const state: State = {
-    start: true,
+    start: false,
     game: false,
     about: false,
     statistics: false,
-    configuration: false,
+    configuration: true,
     loose: false,
     win: false
 }
