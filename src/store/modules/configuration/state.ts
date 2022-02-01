@@ -23,7 +23,7 @@ export const state: State = {
     offsetY: 10,
     hexagonSize: 30,
     numberOfAreas: 30,
-    numberOfPlayers: 6,
+    numberOfPlayers: 5,
     areaSizeVariance: 0.1,
     useDistortion: true,
     useCompactShapes: true,
