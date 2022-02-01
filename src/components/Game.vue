@@ -50,7 +50,7 @@ export default {
             if (!controller) {
                 return
             }
-debugger
+
             const configuration = unrefAll(toRefConfiguration) as Configuration
             fixConfiguration(configuration, canvas.value!)
             controller.initialize(configuration)

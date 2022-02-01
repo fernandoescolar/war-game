@@ -8,7 +8,6 @@ export enum MutationTypes {
 
 export const mutations: MutationTree<State> = {
     [MutationTypes.SetConfiguration](state: State, data: any) {
-        debugger
         Object.assign(state, data)
     },
     [MutationTypes.IncrementGames](state: State) {
