@@ -16,6 +16,12 @@
           <label for="max-armies">Maximun number of armies in one territory (<span class="accent">{{ maxArmies }}</span>):</label>
           <input name="max-armies" type="range" min="5" max="20" v-model="maxArmies" />
         </p>
+          <p>
+          <label class="checkbox">Human player always first
+            <input type="checkbox" v-model="humanPlayerAlwaysFirst">
+            <span class="checkmark"></span>
+          </label>
+        </p>
         <p class="center">
           <button class="start-game" @click="startGame()">
             <span>Start game</span>
@@ -25,18 +31,19 @@
 </template>
 
 <script setup lang="ts">
-import Modal from './Modal.vue';
+import Modal from './Modal.vue'
 import {  mapGetters, mapActions, ScreensState, ConfigurationState, ConfigurationActions, ScreensActions } from '@/store'
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const { configuration } = mapGetters<ScreensState>('screens')
 const config = mapGetters<ConfigurationState>('configuration')
 
 const maxPlayers = ref(config.colors.value.players.length),
- numberOfPlayers = ref(config.numberOfPlayers.value),
-  numberOfAreas = ref(config.numberOfAreas.value),
-  maxArmies = ref(config.maxArmies.value),
-  initialArmies = ref(config.initialArmies.value)
+      numberOfPlayers = ref(config.numberOfPlayers.value),
+      numberOfAreas = ref(config.numberOfAreas.value),
+      maxArmies = ref(config.maxArmies.value),
+      initialArmies = ref(config.initialArmies.value),
+      humanPlayerAlwaysFirst = ref(config.humanPlayerAlwaysFirst.value)
 
 const { SetValue, StartNewGame } = mapActions<ConfigurationActions>('configuration')
 const { ViewGame  } = mapActions<ScreensActions>('screens')
@@ -45,7 +52,8 @@ const startGame = () => {
     numberOfPlayers: parseInt(numberOfPlayers.value.toString()),
     numberOfAreas: parseInt(numberOfAreas.value.toString()),
     maxArmies: parseInt(maxArmies.value.toString()),
-    initialArmies: parseInt(initialArmies.value.toString())
+    initialArmies: parseInt(initialArmies.value.toString()),
+    humanPlayerAlwaysFirst: !!humanPlayerAlwaysFirst.value
   })
   StartNewGame()
   ViewGame()

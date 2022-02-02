@@ -27,6 +27,8 @@ export type Configuration ={
     useCompactShapes: boolean,
     maxArmies: number,
     initialArmies: number,
+    humanPlayerAlwaysFirst: boolean,
+    humanPlayerColor: string,
     colors: {
         players: string[],
         disabled: string,

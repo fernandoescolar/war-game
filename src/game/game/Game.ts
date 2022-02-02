@@ -26,6 +26,7 @@ export default class Game {
     new(): void {
         this.currentPlayerIndex = 0;
         this.players = this.createPlayers();
+        this.assignPlayerColors();
         this.shufflePlayers();
 
         this.board.new();
@@ -85,7 +86,24 @@ export default class Game {
         });
     }
 
+    private assignPlayerColors(): void {
+        const human = this.players[0];
+        if (human.color !== this.configuration.humanPlayerColor) {
+            const cpu = this.players.find(player => player.color === this.configuration.humanPlayerColor);
+            if (!cpu) {
+                return;
+            }
+
+            cpu.color = human.color;
+            human.color = this.configuration.humanPlayerColor;
+        }
+    }
+
     private shufflePlayers(): void {
+        if (this.configuration.humanPlayerAlwaysFirst) {
+            return;
+        }
+
         this.players.sort(() => Math.random() - 0.5);
         this.players.forEach((player, index) => player.id = index);
     }

@@ -1,4 +1,6 @@
 @import "variables";
+@import "checkbox";
+@import "input-range";
 
 @font-face {
   font-family: Zorque;
@@ -62,18 +64,6 @@ a {
 }
 
 label {
-  display: block;
+  display: inline-block;
   margin-bottom: 0.5rem;
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 90%;
-    height: 15px;
-    border-radius: 5px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: opacity .15s ease-in-out;
-    transition: opacity .15s ease-in-out;
 }

@@ -6,7 +6,7 @@ export default abstract class Player {
     moves: number = 0;
     interactive: boolean = true;
 
-    constructor(public id: number, public readonly color: string) {
+    constructor(public id: number, public color: string) {
     }
 
     setTerritory(territory: Territory): void {
