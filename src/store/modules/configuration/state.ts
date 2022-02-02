@@ -29,6 +29,7 @@ export const state: State = {
     useCompactShapes: true,
     maxArmies: 10,
     initialArmies: 20,
+    humanInitialArmies: 20,
     humanPlayerAlwaysFirst: false,
     humanPlayerColor: vars.player1,
     colors: {

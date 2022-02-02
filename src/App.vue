@@ -4,6 +4,7 @@ import Game from '@/components/Game.vue'
 import About from '@/components/About.vue'
 import Configure from '@/components/Configure.vue'
 import Statistics from '@/components/Statistics.vue'
+import Win from '@/components/Win.vue'
 import { ConfigurationState, mapGetters } from '@/store'
 
 const { games } = mapGetters<ConfigurationState>('configuration')
@@ -21,6 +22,7 @@ const { games } = mapGetters<ConfigurationState>('configuration')
   <About />
   <Configure />
   <Statistics />
+  <Win></Win>
 </template>
 
 <style lang="scss" scoped>

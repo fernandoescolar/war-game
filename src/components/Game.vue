@@ -24,7 +24,7 @@ import GameController from '@/game'
 import CanvasRenderer from '@/game/canvas/CanvasRenderer'
 import CanvasInput from '@/game/canvas/CanvasInput'
 import Player from '@/game/game/Player'
-import { ConfigurationState, GameActions, mapActions, mapGetters } from '@/store'
+import { ConfigurationState, GameActions, ScreensActions, mapActions, mapGetters } from '@/store'
 
 const fixCanvas = (canvas: HTMLCanvasElement): void => {
     const width = Math.min(512, window.innerWidth)
@@ -63,6 +63,7 @@ export default {
         const winner: Ref<number> = ref(-1)
         const toRefConfiguration = mapGetters<ConfigurationState>('configuration')
         const { Update, Reset } = mapActions<GameActions>('game')
+        const { ViewWin } = mapActions<ScreensActions>('screens')
         let controller: GameController | undefined;
         let interval: NodeJS.Timer | undefined;
 
@@ -102,6 +103,12 @@ export default {
                 Update({ game: controller.game, startDate: controller.startDate, winDate: controller.winDate, looseDate: controller.looseDate })
                 current.value = controller.currentPlayerId
                 winner.value = controller.winner?.id ?? -1
+                if (winner.value >= 0) {
+                    clearInterval(interval)
+                    if (controller.game.players[winner.value].interactive) {
+                        ViewWin()
+                    }
+                }
             }, 200)
 
             controller.start()

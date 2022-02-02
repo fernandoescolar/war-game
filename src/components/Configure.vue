@@ -9,8 +9,12 @@
       <input name="territories" type="range" min="20" max="50" v-model="numberOfAreas" />
     </p>
     <p>
-      <label for="initial-armies">Initial numer of player armies (<span class="accent">{{ initialArmies }}</span>):</label>
+      <label for="initial-armies">CPU initial numer of player armies (<span class="accent">{{ initialArmies }}</span>):</label>
       <input name="initial-armies" type="range" min="10" max="40" v-model="initialArmies" />
+    </p>
+     <p>
+      <label for="human-armies">Your initial number of player armies (<span class="accent">{{ humanInitialArmies }}</span>):</label>
+      <input name="human-armies" type="range" min="10" max="40" v-model="humanInitialArmies" />
     </p>
     <p>
       <label for="max-armies">Maximun number of armies in one territory (<span class="accent">{{ maxArmies }}</span>):</label>
@@ -43,6 +47,7 @@ const maxPlayers = ref(config.colors.value.players.length),
       numberOfAreas = ref(config.numberOfAreas.value),
       maxArmies = ref(config.maxArmies.value),
       initialArmies = ref(config.initialArmies.value),
+      humanInitialArmies = ref(config.initialArmies.value),
       humanPlayerAlwaysFirst = ref(config.humanPlayerAlwaysFirst.value)
 
 const { SetValue, StartNewGame } = mapActions<ConfigurationActions>('configuration')
@@ -53,6 +58,7 @@ const startGame = () => {
     numberOfAreas: parseInt(numberOfAreas.value.toString()),
     maxArmies: parseInt(maxArmies.value.toString()),
     initialArmies: parseInt(initialArmies.value.toString()),
+    humanInitialArmies: parseInt(humanInitialArmies.value.toString()),
     humanPlayerAlwaysFirst: !!humanPlayerAlwaysFirst.value
   })
   StartNewGame()

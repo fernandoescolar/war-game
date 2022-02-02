@@ -18,9 +18,9 @@ export default class Board {
         this.territories.forEach(territory => players[Random.next(0, players.length - 1)].setTerritory(territory));
     }
 
-    assignInitialArmies(players: Player[], armiesPerPlayer: number): void {
+    assignInitialArmies(players: Player[], armiesPerPlayer: number, armiesPerHuman: number): void {
         players.forEach(player => {
-            let armies = armiesPerPlayer - player.territories.length;
+            let armies = (player.interactive ? armiesPerHuman : armiesPerPlayer) - player.territories.length;
             player.territories.forEach(territory => territory.armies = 1);
 
             var operation = this.createAssignArmiesOperation(player, armies);

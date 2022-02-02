@@ -31,7 +31,7 @@ export default class Game {
 
         this.board.new();
         this.board.assignTerritories(this.players);
-        this.board.assignInitialArmies(this.players, this.configuration.initialArmies);
+        this.board.assignInitialArmies(this.players, this.configuration.initialArmies, this.configuration.humanInitialArmies);
     }
 
     beforeSkip(): number[] {

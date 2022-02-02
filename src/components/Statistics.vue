@@ -8,12 +8,12 @@
           <br />
           <table>
             <tr>
-              <td>👊</td>
+              <td>💥</td>
               <td>moves</td>
               <td>{{ player.moves }}</td>
             </tr>
             <tr>
-              <td>🙌</td>
+              <td>✌</td>
               <td>victories</td>
               <td>{{ player.successfulMoves }}</td>
             </tr>
@@ -26,7 +26,7 @@
               </td>
             </tr>
           </table>
-          <hr />
+          <hr/>
         </p>
         <p>
           ⏱ {{ time }}
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import Modal from './Modal.vue';
+import Modal from './Modal.vue'
 import {  mapGetters, ScreensState, GameState } from '@/store'
 import { computed, ref } from '@vue/runtime-core';
 
