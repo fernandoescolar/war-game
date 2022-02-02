@@ -100,6 +100,7 @@ export default {
                 if (!controller) {
                     return
                 }
+                debugger
                 Update({ game: controller.game, startDate: controller.startDate, winDate: controller.winDate, looseDate: controller.looseDate })
                 current.value = controller.currentPlayerId
                 winner.value = controller.winner?.id ?? -1

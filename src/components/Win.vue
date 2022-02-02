@@ -79,7 +79,11 @@ export default {
     const { ViewConfiguration } = mapActions<ScreensActions>('screens')
     const { startDate, winDate, players } = mapGetters<GameState>('game')
     const { numberOfAreas, numberOfPlayers, initialArmies, humanInitialArmies } = mapGetters<ConfigurationState>('configuration')
-    const time = computed(() => dateDiffToString(Math.floor(winDate.value?.getTime() ?? new Date().getTime() - startDate.value.getTime())/1000))
+    const time = computed(() => {
+      debugger;
+      const diff = winDate.value - startDate.value
+      return dateDiffToString(diff/1000)
+    })
     const humanIndex = computed(() => players.value.findIndex(p => p.name === 'You'))
     const share = () => {
       const c = text.value?.innerText + '\n\nwar.developerro.com';
