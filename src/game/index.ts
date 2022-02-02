@@ -11,6 +11,9 @@ function wait(millis: number): Promise<void> {
 export default class GameController {
     game!: Game;
     status!: HTMLDivElement;
+    startDate!: Date;
+    looseDate: Date | undefined;
+    winDate: Date | undefined;
 
     private sourceOffsetY: number = 0;
 
@@ -46,6 +49,7 @@ export default class GameController {
         this.game.configuration.offsetY = this.sourceOffsetY - minY;
 
         this.renderer.initializeTerritories();
+        this.startDate = new Date();
         await this.gameStep();
     }
 
@@ -61,8 +65,14 @@ export default class GameController {
     private gameIsRunning(): boolean {
         const winner = this.game.getWinner();
         if (winner) {
+            if (!this.winDate) this.winDate = new Date();
             this.status.innerHTML = `<span style="color: ${winner.color};"> Player ${winner.id}</span> wins the game!`;
             return false;
+        }
+
+        const humanHasLost = this.game.players.findIndex(x => x.territories.length === 0 && x.interactive) >= 0;
+        if (humanHasLost && !this.looseDate) {
+            this.looseDate = new Date();
         }
 
         this.status.innerHTML = `Turn for: <span style="color: ${this.game.currentPlayer.color};"> Player ${this.game.currentPlayer.id}</span>`;

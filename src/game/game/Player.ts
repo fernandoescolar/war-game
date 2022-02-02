@@ -1,9 +1,10 @@
-import type { Action } from "./types";
+import type { Action, ActionSkip } from "./types";
 import Territory from "./Territory";
 
 export default abstract class Player {
     territories: Territory[] = [];
     moves: number = 0;
+    successfulMoves: number = 0;
     interactive: boolean = true;
 
     constructor(public id: number, public color: string) {
@@ -18,7 +19,7 @@ export default abstract class Player {
 
     async getAction(): Promise<Action> {
         const action = await this.getNextAction();
-        if (action.type === 'attack') this.moves++;
+        if (!(action as ActionSkip).skip) this.moves++;
         return action;
     }
 

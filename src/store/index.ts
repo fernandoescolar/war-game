@@ -3,19 +3,24 @@ import { createStore, Store, useStore as baseUseStore } from 'vuex'
 
 import { module as configuration } from './modules/configuration'
 import { module as screens } from './modules/screens'
+import { module as game } from './modules/game'
 
 import type { RootState } from './state';
 import type { State as ConfigurationState } from './modules/configuration'
 import type { State as ScreensState } from './modules/screens'
+import type { State as GameState } from './modules/game'
+
 import type { Actions as ConfigurationActions } from './modules/configuration'
 import type { Actions as ScreensActions } from './modules/screens'
+import type { Actions as GameActions } from './modules/game'
 
 const key: InjectionKey<Store<RootState>> = Symbol()
 
 const store = createStore<RootState>({
     modules: {
         configuration,
-        screens
+        screens,
+        game
     }
 })
 
@@ -44,6 +49,8 @@ export {
     mapActions,
     ConfigurationState,
     ScreensState,
+    GameState,
     ConfigurationActions,
-    ScreensActions
+    ScreensActions,
+    GameActions
 }

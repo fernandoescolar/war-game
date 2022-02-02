@@ -12,7 +12,7 @@ export default class Game {
     players: Player[] = [];
     board: Board;
     currentPlayerIndex: number = 0;
-    currentSuccessfullAttackMovements: number = 0;
+    currentSuccessfulAttackMovements: number = 0;
 
     get currentPlayer(): Player {
         return this.players[this.currentPlayerIndex];
@@ -35,13 +35,13 @@ export default class Game {
     }
 
     beforeSkip(): number[] {
-        const armiesToAdd = Math.floor((this.currentSuccessfullAttackMovements + this.currentPlayer.territories.length) / 2);
+        const armiesToAdd = Math.floor((this.currentSuccessfulAttackMovements + this.currentPlayer.territories.length) / 2);
         return this.board.createAssignArmiesOperation(this.currentPlayer, armiesToAdd);
     }
 
     skip(armiesToAdd: number[]): void {
         this.board.applyAssignArmiesOperation(this.currentPlayer, armiesToAdd);
-        this.currentSuccessfullAttackMovements = 0;
+        this.currentSuccessfulAttackMovements = 0;
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
         if (this.currentPlayer.territories.length === 0) {
             this.skip([]);
@@ -70,8 +70,9 @@ export default class Game {
 
     apply(movement: Movement): void {
         if (movement.attack.value > movement.defense.value) {
-            this.currentSuccessfullAttackMovements++;
+            this.currentSuccessfulAttackMovements++;
             movement.defender.armies = movement.attacker.armies - 1;
+            this.currentPlayer.successfulMoves++;
             this.currentPlayer.setTerritory(movement.defender);
         }
 

@@ -1,3 +1,22 @@
+<template>
+    <canvas ref="canvas"></canvas>
+    <div :class="`grid columns-${players.length}`">
+        <div class="grid-cell" v-for="player in players" :key="player.id" :style="`background-color: ${player.color}`">
+            {{ player.interactive ? 'You' : 'CPU' }}
+        </div>
+        <div class="grid-mark" v-for="player in players" :key="`mark-${player.id}`">
+            <svg v-if="player.id === current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+            <svg v-if="player.territories.length === 0" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="red"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </div>
+    </div>
+    <footer>
+        <div id="status"></div>
+        <button ref="skip">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"></path></svg>
+        </button>
+    </footer>
+</template>
+
 <script lang="ts">
 import { onMounted, onUnmounted,  Ref, ref, unref, watch } from 'vue'
 import type { Configuration } from '@/game/game/types'
@@ -5,7 +24,7 @@ import GameController from '@/game'
 import CanvasRenderer from '@/game/canvas/CanvasRenderer'
 import CanvasInput from '@/game/canvas/CanvasInput'
 import Player from '@/game/game/Player'
-import { ConfigurationState, mapGetters } from '@/store'
+import { ConfigurationState, GameActions, mapActions, mapGetters } from '@/store'
 
 const fixCanvas = (canvas: HTMLCanvasElement): void => {
     const width = Math.min(512, window.innerWidth)
@@ -43,11 +62,27 @@ export default {
         const current: Ref<number> = ref(0)
         const winner: Ref<number> = ref(-1)
         const toRefConfiguration = mapGetters<ConfigurationState>('configuration')
+        const { Update, Reset } = mapActions<GameActions>('game')
         let controller: GameController | undefined;
         let interval: NodeJS.Timer | undefined;
 
+        const initialize = (): boolean => {
+            if (canvas.value) {
+                Reset()
+                const configuration = unrefAll(toRefConfiguration) as Configuration
+                fixCanvas(canvas.value)
+
+                const context = canvas.value.getContext("2d") as CanvasRenderingContext2D
+                const renderer = new CanvasRenderer(configuration, context)
+                const input = new CanvasInput(renderer, skip.value as HTMLElement)
+                controller = new GameController(renderer, input)
+                return true
+            }
+
+            return false
+        }
+
         const start = () => {
-        //watch(toRefConfiguration.games, (value, old) => {
             if (!controller) {
                 return
             }
@@ -64,25 +99,17 @@ export default {
                 if (!controller) {
                     return
                 }
-
+                Update({ game: controller.game, startDate: controller.startDate, winDate: controller.winDate, looseDate: controller.looseDate })
                 current.value = controller.currentPlayerId
                 winner.value = controller.winner?.id ?? -1
             }, 200)
 
             controller.start()
             players.value = [ ...controller.players ]
-        //})
         }
 
         onMounted(() => {
-            if (canvas.value) {
-                const configuration = unrefAll(toRefConfiguration) as Configuration
-                fixCanvas(canvas.value)
-
-                const context = canvas.value.getContext("2d") as CanvasRenderingContext2D
-                const renderer = new CanvasRenderer(configuration, context)
-                const input = new CanvasInput(renderer, skip.value as HTMLElement)
-                controller = new GameController(renderer, input)
+            if (initialize()) {
                 start()
             }
         })
@@ -103,25 +130,6 @@ export default {
     }
 }
 </script>
-
-<template>
-    <canvas ref="canvas"></canvas>
-    <div :class="`grid columns-${players.length}`">
-        <div class="grid-cell" v-for="player in players" :key="player.id" :style="`background-color: ${player.color}`">
-            {{ player.interactive ? 'You' : 'CPU' }}
-        </div>
-        <div class="grid-mark" v-for="player in players" :key="`mark-${player.id}`">
-            <svg v-if="player.id === current" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-            <svg v-if="player.territories.length === 0" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="red"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </div>
-    </div>
-    <footer>
-        <div id="status"></div>
-        <button ref="skip">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"></path></svg>
-        </button>
-    </footer>
-</template>
 
 <style lang="scss">
 @import "../sass/variables";
@@ -161,7 +169,6 @@ footer {
     height: 50px;
 
     button {
-        font-size: 20px;
         padding: 0.4em;
         border: 2px solid $lines;
         background-color: $accent;
@@ -169,6 +176,10 @@ footer {
         width: 42px;
         text-align: center;
         align-content: center;
+
+        &:hover {
+            color: $background;
+        }
     }
 
     #status {

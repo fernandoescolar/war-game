@@ -1,32 +1,32 @@
 <template>
-  <Modal title="Start new game" :visible="configuration">
-        <p>
-          <label for="players">Number of players (<span class="accent">{{ numberOfPlayers }}</span>):</label>
-          <input name="players" type="range" min="3" :max="maxPlayers" v-model="numberOfPlayers" />
-        </p>
-        <p>
-          <label for="territories">Number of territories (<span class="accent">{{ numberOfAreas }}</span>):</label>
-          <input name="territories" type="range" min="20" max="50" v-model="numberOfAreas" />
-        </p>
-        <p>
-          <label for="initial-armies">Initial numer of player armies (<span class="accent">{{ initialArmies }}</span>):</label>
-          <input name="initial-armies" type="range" min="10" max="40" v-model="initialArmies" />
-        </p>
-        <p>
-          <label for="max-armies">Maximun number of armies in one territory (<span class="accent">{{ maxArmies }}</span>):</label>
-          <input name="max-armies" type="range" min="5" max="20" v-model="maxArmies" />
-        </p>
-          <p>
-          <label class="checkbox">Human player always first
-            <input type="checkbox" v-model="humanPlayerAlwaysFirst">
-            <span class="checkmark"></span>
-          </label>
-        </p>
-        <p class="center">
-          <button class="start-game" @click="startGame()">
-            <span>Start game</span>
-          </button>
-        </p>
+  <Modal title="Start new game" :visible="configuration" :showClose="config.games.value > 0">
+    <p>
+      <label for="players">Number of players (<span class="accent">{{ numberOfPlayers }}</span>):</label>
+      <input name="players" type="range" min="3" :max="maxPlayers" v-model="numberOfPlayers" />
+    </p>
+    <p>
+      <label for="territories">Number of territories (<span class="accent">{{ numberOfAreas }}</span>):</label>
+      <input name="territories" type="range" min="20" max="50" v-model="numberOfAreas" />
+    </p>
+    <p>
+      <label for="initial-armies">Initial numer of player armies (<span class="accent">{{ initialArmies }}</span>):</label>
+      <input name="initial-armies" type="range" min="10" max="40" v-model="initialArmies" />
+    </p>
+    <p>
+      <label for="max-armies">Maximun number of armies in one territory (<span class="accent">{{ maxArmies }}</span>):</label>
+      <input name="max-armies" type="range" min="5" max="20" v-model="maxArmies" />
+    </p>
+      <p>
+      <label class="checkbox">Human player always first
+        <input type="checkbox" v-model="humanPlayerAlwaysFirst">
+        <span class="checkmark"></span>
+      </label>
+    </p>
+    <p class="center">
+      <button class="start-game" @click="startGame()">
+        <span>Start game</span>
+      </button>
+    </p>
   </Modal>
 </template>
 
