@@ -3,7 +3,7 @@
         <h1>YOU WIN!!!</h1>
         <div ref="text">
             👥 {{ numberOfPlayers}} 🗺 {{ numberOfAreas }} 🏁 {{ initialArmies }} 🚩 {{ humanInitialArmies }}<br>
-            ⏱ {{ time }}<br>
+            ⏱ {{ time }} 💥 {{ player.moves }} ✌ {{ player.successfulMoves }}<br>
             <span v-if="humanInitialArmies > initialArmies">🍬</span>
             <span v-if="humanInitialArmies === initialArmies">🤘</span>
             <span v-if="humanInitialArmies < initialArmies">🤟</span>
@@ -79,13 +79,14 @@ export default {
     const { ViewConfiguration } = mapActions<ScreensActions>('screens')
     const { startDate, winDate, players } = mapGetters<GameState>('game')
     const { numberOfAreas, numberOfPlayers, initialArmies, humanInitialArmies } = mapGetters<ConfigurationState>('configuration')
+    const humanIndex = computed(() => players.value.findIndex(p => p.name === 'You'))
+    const player = computed(() => players.value.find(p => p.name === 'You'))
     const time = computed(() => {
       debugger;
       const diff = winDate.value - startDate.value
       return dateDiffToString(diff/1000)
     })
-    const humanIndex = computed(() => players.value.findIndex(p => p.name === 'You'))
-    const share = () => {
+        const share = () => {
       const c = text.value?.innerText + '\n\nwar.developerro.com';
       toCopy.value.value = c
       toCopy.value.select()
