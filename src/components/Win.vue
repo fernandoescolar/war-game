@@ -26,12 +26,14 @@
         </div>
         <legend>
           <b>Legend:</b><br>
-          ⏱ time<br />
           👥 players<br />
           🗺 regions<br />
           🏁 inital armies<br />
           🚩 your initial armies<br /><br />
-          <b>badges</b>:<br>
+          ⏱ time<br />
+          💥 attacks<br />
+          ✌ victories<br />
+          <b>badges</b>:<br />
           🍬 more armies than others<br />
           🤘 same armies than others<br />
           🤟 less armies than others<br />
@@ -120,6 +122,7 @@ export default {
       win,
       time,
       humanIndex,
+      player,
       numberOfAreas,
       numberOfPlayers,
       initialArmies,
