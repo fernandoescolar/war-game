@@ -1,48 +1,64 @@
 <template>
   <Modal title="Statistics" :visible="statistics">
     <div v-if="statistics">
-        <p v-for="(player, index) in players" :key="index">
-          <span :style="{ color: player.color}">{{ player.name }}</span>
-          <span v-if="player.alive"> ❤</span>
-          <span v-if="!player.alive"> 💀</span>
-          <br />
+        <p>
           <table>
             <tr>
-              <td>💥</td>
-              <td>moves</td>
+              <th></th>
+              <th></th>
+              <th>💥</th>
+              <th>✌</th>
+              <th>📈</th>
+            </tr>
+            <tr v-for="(player, index) in players" :key="index">
+              <td>
+                <span :style="{ color: player.color}">{{ player.name }}</span>
+              </td>
+              <td>
+                <span v-if="player.alive"> ❤</span>
+                <span v-if="!player.alive"> 💀</span>
+              </td>
               <td>{{ player.moves }}</td>
-            </tr>
-            <tr>
-              <td>✌</td>
-              <td>victories</td>
               <td>{{ player.successfulMoves }}</td>
-            </tr>
-            <tr>
-              <td>📈</td>
-              <td>ratio</td>
               <td>
                 <span v-if="player.successfulMoves === 0">0%</span>
                 <span v-if="player.successfulMoves > 0">{{ Math.floor(player.successfulMoves * 100 / player.moves) }}%</span>
               </td>
             </tr>
           </table>
-          <hr/>
         </p>
-        <p>
+        <p class="centered">
           ⏱ {{ time }}
         </p>
+        <div v-if="showHistory">
+          <p>
+            <b>History:</b>
+          </p>
+          <p v-for="line, index in lines" :key="index">
+              <span v-html="line"></span>
+          </p>
+          <p>
+            <a href="#" @click="showHistory = false">hide history</a>
+          </p>
+        </div>
+        <div v-else>
+          <p>
+            <a href="#" @click="showHistory = true">show history</a>
+          </p>
+        </div>
     </div>
   </Modal>
 </template>
 
 <script setup lang="ts">
 import Modal from './Modal.vue'
-import {  mapGetters, ScreensState, GameState } from '@/store'
+import {  mapGetters, ScreensState, GameState, HistoryState } from '@/store'
 import { computed, ref } from '@vue/runtime-core';
 
+const showHistory = ref(false)
 const { statistics } = mapGetters<ScreensState>('screens')
 const { players, startDate, winDate, looseDate } = mapGetters<GameState>('game')
-
+const { lines } = mapGetters<HistoryState>('history')
 
 // convert date diff to string
 const dateDiffToString = (dateDiff: number) => {
@@ -76,14 +92,18 @@ setInterval(() => {
 
 <style lang="scss" scoped>
 table {
-  tr {
-    td {
-      padding: 0 0.5rem;
+  width: 100%;
+  td, th {
+    padding: 0 0.5rem;
+    text-align: right !important;
 
-      &:last-child {
-        text-align: right;
-      }
+    &:first-child {
+      text-align: left !important;
     }
   }
+}
+
+.centered {
+  text-align: center;
 }
 </style>

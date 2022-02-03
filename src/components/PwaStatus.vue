@@ -20,6 +20,7 @@ const {
     }
   },
 })
+
 const close = async() => {
   offlineReady.value = false
   needRefresh.value = false
@@ -37,7 +38,7 @@ const close = async() => {
         App ready to work offline
       </span>
       <span v-else>
-        New content available, click on reload button to update.
+        New version available, click on reload button to update.
       </span>
     </div>
     <button v-if="needRefresh" @click="updateServiceWorker()">
@@ -49,27 +50,38 @@ const close = async() => {
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
+@import "../sass/variables";
+
 .pwa-toast {
   position: fixed;
   right: 0;
-  bottom: 0;
+  bottom: 10px;
   margin: 16px;
   padding: 12px;
-  border: 1px solid #8885;
+  border: 1px solid $lines;
   border-radius: 4px;
   z-index: 1;
   text-align: left;
-  box-shadow: 3px 4px 5px 0px #8885;
+  box-shadow: 3px 4px 5px 0px $shadow;
+  animation: fadein 0.5s;
+
+  .message {
+    margin-bottom: 8px;
+  }
+
+  button {
+    border: 1px solid $lines;
+    outline: none;
+    margin-right: 5px;
+    border-radius: 2px;
+    padding: 3px 10px;
+    font-family: $title-font-family;
+  }
 }
-.pwa-toast .message {
-  margin-bottom: 8px;
-}
-.pwa-toast button {
-  border: 1px solid #8885;
-  outline: none;
-  margin-right: 5px;
-  border-radius: 2px;
-  padding: 3px 10px;
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 10px; opacity: 1;}
 }
 </style>

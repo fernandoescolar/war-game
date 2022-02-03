@@ -14,12 +14,12 @@ const { games } = mapGetters<ConfigurationState>('configuration')
 <template>
   <div class="app">
     <div class="wrapper">
-      <PwaStatus />
       <Header />
       <main>
         <Game v-if="games > 0" :key="games"/>
       </main>
     </div>
+    <PwaStatus />
   </div>
   <About />
   <Configure />

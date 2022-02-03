@@ -15,6 +15,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
     background_color: '#ffffff',
     display: 'standalone',
     orientation: 'portrait',
+    categories: ["game", "strategy", "war"],
     icons: [
       {
         src: 'android-chrome-192x192.png',

@@ -10,7 +10,7 @@
         </div>
     </div>
     <footer>
-        <div id="status"></div>
+        <div ref="status" id="status"></div>
         <button ref="skip">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"></path></svg>
         </button>
@@ -25,6 +25,7 @@ import CanvasRenderer from '@/game/canvas/CanvasRenderer'
 import CanvasInput from '@/game/canvas/CanvasInput'
 import Player from '@/game/game/Player'
 import { ConfigurationState, GameActions, ScreensActions, mapActions, mapGetters } from '@/store'
+import GameLogger from './GameLogger'
 
 const fixCanvas = (canvas: HTMLCanvasElement): void => {
     const width = Math.min(512, window.innerWidth)
@@ -54,10 +55,13 @@ const unrefAll = (obj: any): any => {
     return newObj;
 }
 
+
+
 export default {
     setup() {
         const canvas: Ref<HTMLCanvasElement | null> = ref(null)
         const skip: Ref<HTMLElement | null> = ref(null)
+        const status: Ref<HTMLElement | null> = ref(null)
         const players: Ref<Player[]> = ref([])
         const current: Ref<number> = ref(0)
         const winner: Ref<number> = ref(-1)
@@ -76,7 +80,8 @@ export default {
                 const context = canvas.value.getContext("2d") as CanvasRenderingContext2D
                 const renderer = new CanvasRenderer(configuration, context)
                 const input = new CanvasInput(renderer, skip.value as HTMLElement)
-                controller = new GameController(renderer, input)
+                const logs = new GameLogger(status.value as HTMLElement)
+                controller = new GameController(renderer, input, log => logs.loggger(log))
                 return true
             }
 
@@ -131,6 +136,7 @@ export default {
         return {
             canvas,
             skip,
+            status,
             players,
             current
         }

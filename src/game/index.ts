@@ -3,6 +3,7 @@ import Game from "./game/Game";
 import IRenderer from "./IRenderer";
 import IInput from "./IInput";
 import Player from "./game/Player";
+import { Logger, GameStart, TurnStart, AddArmies, Attack, Win } from "./logs";
 
 function wait(millis: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, millis));
@@ -29,7 +30,7 @@ export default class GameController {
         return this.game?.currentPlayer?.id ?? -1;
     }
 
-    constructor(private readonly renderer: IRenderer, private readonly input: IInput) {
+    constructor(private readonly renderer: IRenderer, private readonly input: IInput, private readonly logger: Logger) {
     }
 
     initialize(configuration: Configuration): void {
@@ -50,6 +51,12 @@ export default class GameController {
 
         this.renderer.initializeTerritories();
         this.startDate = new Date();
+        await this.logger({
+            state: 'game',
+            players: this.game.players.map(p => ({ id: p.id, name: p.interactive ? 'You' : 'CPU', color: p.color })),
+            territories: this.game.board.territories.map(t => ({ playerId: t.player?.id, armies: t.armies, outlines: t.outline })),
+            date: new Date()
+        } as GameStart);
         await this.gameStep();
     }
 
@@ -62,11 +69,16 @@ export default class GameController {
         draw();
     }
 
-    private gameIsRunning(): boolean {
+    private async gameIsRunning(): Promise<boolean> {
         const winner = this.game.getWinner();
         if (winner) {
             if (!this.winDate) this.winDate = new Date();
-            this.status.innerHTML = `<span style="color: ${winner.color};"> Player ${winner.id}</span> wins the game!`;
+            await this.logger({
+                state: 'win',
+                playerId: winner.id,
+                date: new Date()
+            } as Win);
+
             return false;
         }
 
@@ -75,7 +87,12 @@ export default class GameController {
             this.looseDate = new Date();
         }
 
-        this.status.innerHTML = `Turn for: <span style="color: ${this.game.currentPlayer.color};"> Player ${this.game.currentPlayer.id}</span>`;
+        await this.logger({
+            state: 'turn',
+            playerId: this.game.currentPlayer.id,
+            date: new Date()
+        } as TurnStart);
+
         return true;
     };
 
@@ -84,13 +101,18 @@ export default class GameController {
 
         const delay = this.game.currentPlayer.interactive ? 1000 : 200;
         const action = await this.game.currentPlayer.getAction();
-
         if ((action as ActionSkip).skip) {
-            this.status.innerHTML = `<span style="color: ${this.game.currentPlayer.color};"> Player ${this.game.currentPlayer.id}</span> skips turn`;
-            await wait(delay);
-            this.status.innerHTML = `<span style="color: ${this.game.currentPlayer.color};"> Player ${this.game.currentPlayer.id}</span> adding armies`;
-            const armies =this. game.beforeSkip();
-            //renderer.armiesToAdd = armies;
+            const armies = this. game.beforeSkip();
+            const total = armies.reduce((a, b) => a + b, 0);
+            const territories = armies.map((armies, i) => ({ territoryId: i, armies }));
+            await this.logger({
+                state: 'armies',
+                playerId: this.game.currentPlayer.id,
+                total,
+                territories,
+                date: new Date()
+            } as AddArmies);
+
             this.game.board.disableAll();
             this.game.currentPlayer.territories.forEach(territory => territory.active = true);
 
@@ -102,6 +124,7 @@ export default class GameController {
             });
             this.game.skip(armies);
             await Promise.all(promises);
+
             await wait(delay);
             this.game.board.resetState();
             this.gameStep();
@@ -115,17 +138,22 @@ export default class GameController {
         attack.source.active = false;
         attack.target.selected = true;
         attack.target.active = false;
-        // this.status.innerHTML += `<br>to: ${movement.defender.id} (<span style="color: ${movement.defender.color};">Player ${movement.defender.player?.id}</span>)`;
+
+        await this.logger({
+            state: 'attack',
+            fromPlayerId: movement.attacker.player?.id,
+            toPlayerId: movement.defender.player?.id,
+            fromTerritoryId: movement.attacker.id,
+            toTerritoryId: movement.defender.id,
+            attack: movement.attack.value,
+            defense: movement.defense.value,
+            date: new Date()
+        } as Attack);
+
         await this.renderer.showPoints({
             [movement.attacker.id]: movement.attack.value,
             [movement.defender.id]: movement.defense.value
         }, 500);
-        // this.status.innerHTML += `<br><span style="color: ${movement.attacker.color};">${movement.attack.value}</span> vs. <span style="color: ${movement.defender.color};">${movement.defense.value}</span>`;
-        // if (movement.attack.value > movement.defense.value) {
-        //     this.status.innerHTML += `<br><span style="color: ${movement.attacker.color};">Player ${movement.attacker.player?.id}</span> wins!`;
-        // } else {
-        //     this.status.innerHTML += `<br><span style="color: ${movement.defender.color};">Player ${movement.defender.player?.id}</span> wins!`;
-        // }
 
         await wait(Math.min(500, delay));
         this.game.apply(movement);
