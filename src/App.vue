@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PwaStatus from '@/components/PwaStatus.vue'
 import Header from '@/components/Header.vue'
 import Game from '@/components/Game.vue'
 import About from '@/components/About.vue'
@@ -13,6 +14,7 @@ const { games } = mapGetters<ConfigurationState>('configuration')
 <template>
   <div class="app">
     <div class="wrapper">
+      <PwaStatus />
       <Header />
       <main>
         <Game v-if="games > 0" :key="games"/>

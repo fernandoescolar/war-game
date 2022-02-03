@@ -1,9 +1,10 @@
 <template>
     <Modal title="" :visible="win" :showClose="false">
+      <div v-if="win">
         <h1>YOU WIN!!!</h1>
         <div ref="text">
             👥 {{ numberOfPlayers}} 🗺 {{ numberOfAreas }} 🏁 {{ initialArmies }} 🚩 {{ humanInitialArmies }}<br>
-            ⏱ {{ time }} 💥 {{ player.moves }} ✌ {{ player.successfulMoves }}<br>
+            ⏱ {{ time }} 💥 {{ player.moves }} ✌ {{ player.successfulMoves }} 📈{{ Math.floor(player.successfulMoves * 100 / player.moves) }}%<br>
             <span v-if="humanInitialArmies > initialArmies">🍬</span>
             <span v-if="humanInitialArmies === initialArmies">🤘</span>
             <span v-if="humanInitialArmies < initialArmies">🤟</span>
@@ -13,8 +14,8 @@
         </div>
         <div class="center">
           <input ref="toCopy" type="hidden" />
-          <button @click="share()">share</button>
           <div class="share">
+            <a href="#" @click="share()"><svg viewBox="0 0 32 32" width="35" height="35" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15" fill="#3e3e3e"></circle><path transform="translate(3, 3)" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg></a>
             <a href="#" @click="tweet()"><svg viewBox="0 0 64 64" width="35" height="35"><circle cx="32" cy="32" r="31" fill="#00aced"></circle><path d="M48,22.1c-1.2,0.5-2.4,0.9-3.8,1c1.4-0.8,2.4-2.1,2.9-3.6c-1.3,0.8-2.7,1.3-4.2,1.6 C41.7,19.8,40,19,38.2,19c-3.6,0-6.6,2.9-6.6,6.6c0,0.5,0.1,1,0.2,1.5c-5.5-0.3-10.3-2.9-13.5-6.9c-0.6,1-0.9,2.1-0.9,3.3 c0,2.3,1.2,4.3,2.9,5.5c-1.1,0-2.1-0.3-3-0.8c0,0,0,0.1,0,0.1c0,3.2,2.3,5.8,5.3,6.4c-0.6,0.1-1.1,0.2-1.7,0.2c-0.4,0-0.8,0-1.2-0.1 c0.8,2.6,3.3,4.5,6.1,4.6c-2.2,1.8-5.1,2.8-8.2,2.8c-0.5,0-1.1,0-1.6-0.1c2.9,1.9,6.4,2.9,10.1,2.9c12.1,0,18.7-10,18.7-18.7 c0-0.3,0-0.6,0-0.8C46,24.5,47.1,23.4,48,22.1z" fill="white"></path></svg></a>
             <a href="#" @click="facebook()"><svg viewBox="0 0 64 64" width="35" height="35"><circle cx="32" cy="32" r="31" fill="#3b5998"></circle><path d="M34.1,47V33.3h4.6l0.7-5.3h-5.3v-3.4c0-1.5,0.4-2.6,2.6-2.6l2.8,0v-4.8c-0.5-0.1-2.2-0.2-4.1-0.2 c-4.1,0-6.9,2.5-6.9,7V28H24v5.3h4.6V47H34.1z" fill="white"></path></svg></a>
             <a href="#" @click="whatsapp()"><svg viewBox="0 0 64 64" width="35" height="35"><circle cx="32" cy="32" r="31" fill="#25D366"></circle><path d="m42.32286,33.93287c-0.5178,-0.2589 -3.04726,-1.49644 -3.52105,-1.66732c-0.4712,-0.17346 -0.81554,-0.2589 -1.15987,0.2589c-0.34175,0.51004 -1.33075,1.66474 -1.63108,2.00648c-0.30032,0.33658 -0.60064,0.36247 -1.11327,0.12945c-0.5178,-0.2589 -2.17994,-0.80259 -4.14759,-2.56312c-1.53269,-1.37217 -2.56312,-3.05503 -2.86603,-3.57283c-0.30033,-0.5178 -0.03366,-0.80259 0.22524,-1.06149c0.23301,-0.23301 0.5178,-0.59547 0.7767,-0.90616c0.25372,-0.31068 0.33657,-0.5178 0.51262,-0.85437c0.17088,-0.36246 0.08544,-0.64725 -0.04402,-0.90615c-0.12945,-0.2589 -1.15987,-2.79613 -1.58964,-3.80584c-0.41424,-1.00971 -0.84142,-0.88027 -1.15987,-0.88027c-0.29773,-0.02588 -0.64208,-0.02588 -0.98382,-0.02588c-0.34693,0 -0.90616,0.12945 -1.37736,0.62136c-0.4712,0.5178 -1.80194,1.76053 -1.80194,4.27186c0,2.51134 1.84596,4.945 2.10227,5.30747c0.2589,0.33657 3.63497,5.51458 8.80262,7.74113c1.23237,0.5178 2.1903,0.82848 2.94111,1.08738c1.23237,0.38836 2.35599,0.33657 3.24402,0.20712c0.99159,-0.15534 3.04985,-1.24272 3.47963,-2.45956c0.44013,-1.21683 0.44013,-2.22654 0.31068,-2.45955c-0.12945,-0.23301 -0.46601,-0.36247 -0.98382,-0.59548m-9.40068,12.84407l-0.02589,0c-3.05503,0 -6.08417,-0.82849 -8.72495,-2.38189l-0.62136,-0.37023l-6.47252,1.68286l1.73463,-6.29129l-0.41424,-0.64725c-1.70875,-2.71846 -2.6149,-5.85116 -2.6149,-9.07706c0,-9.39809 7.68934,-17.06155 17.15993,-17.06155c4.58253,0 8.88029,1.78642 12.11655,5.02268c3.23625,3.21036 5.02267,7.50812 5.02267,12.06476c-0.0078,9.3981 -7.69712,17.06155 -17.14699,17.06155m14.58906,-31.58846c-3.93529,-3.80584 -9.1133,-5.95471 -14.62789,-5.95471c-11.36055,0 -20.60848,9.2065 -20.61625,20.52564c0,3.61684 0.94757,7.14565 2.75211,10.26282l-2.92557,10.63564l10.93337,-2.85309c3.0136,1.63108 6.4052,2.4958 9.85634,2.49839l0.01037,0c11.36574,0 20.61884,-9.2091 20.62403,-20.53082c0,-5.48093 -2.14111,-10.64081 -6.03239,-14.51915" fill="white"></path></svg></a>
@@ -29,28 +30,29 @@
           👥 players<br />
           🗺 regions<br />
           🏁 inital armies<br />
-          🚩 your initial armies<br /><br />
+          🚩 your initial armies<br />
           ⏱ time<br />
           💥 attacks<br />
           ✌ victories<br />
+          📈 ratio<br /><br />
           <b>badges</b>:<br />
-          🍬 more armies than others<br />
-          🤘 same armies than others<br />
-          🤟 less armies than others<br />
-          🍭 first turn<br />
-          👍 not first turn<br />
-          💪 last turn<br />
+          <span v-if="humanInitialArmies > initialArmies">🍬 more armies than others<br /></span>
+          <span v-if="humanInitialArmies === initialArmies">🤘 same armies than others<br /></span>
+          <span v-if="humanInitialArmies < initialArmies">🤟 less armies than others<br /></span>
+          <span v-if="humanIndex === 0">🍭 first turn<br /></span>
+          <span v-if="humanIndex === numberOfPlayers - 1">👍 not first turn<br /></span>
+          <span v-if="humanIndex < numberOfPlayers - 1 && humanIndex > 0">💪 last turn<br /></span>
         </legend>
-        <div id="snackbar">copied to clipboard</div>
+        <Snackbar title="copied to clipboard" :toggle="toggleSnackbar" />
+      </div>
     </Modal>
-    <div v-if="win" class="pyro">
-        <div class="before"></div>
-        <div class="after"></div>
-    </div>
+    <Fireworks v-if="win" />
 </template>
 
 <script lang="ts">
 import Modal from './Modal.vue'
+import Fireworks from './Fireworks.vue'
+import Snackbar from './Snackbar.vue'
 import {  mapActions, mapGetters, ScreensState, GameState, ConfigurationState, ScreensActions } from '@/store'
 import { computed, Ref, ref } from 'vue'
 
@@ -72,49 +74,44 @@ const dateDiffToString = (dateDiff: number) => {
 
 export default {
   components: {
-    Modal
+    Modal,
+    Snackbar,
+    Fireworks
   },
   setup() {
-    const text: Ref<HTMLDivElement | null> = ref(null)
-    const toCopy: Ref<HTMLInputElement | null> = ref(null)
-    const { win } = mapGetters<ScreensState>('screens')
-    const { ViewConfiguration } = mapActions<ScreensActions>('screens')
-    const { startDate, winDate, players } = mapGetters<GameState>('game')
-    const { numberOfAreas, numberOfPlayers, initialArmies, humanInitialArmies } = mapGetters<ConfigurationState>('configuration')
-    const humanIndex = computed(() => players.value.findIndex(p => p.name === 'You'))
-    const player = computed(() => players.value.find(p => p.name === 'You'))
-    const time = computed(() => {
-      debugger;
-      const diff = winDate.value - startDate.value
-      return dateDiffToString(diff/1000)
-    })
-        const share = () => {
-      const c = text.value?.innerText + '\n\nwar.developerro.com';
-      toCopy.value.value = c
-      toCopy.value.select()
-      if (document.execCommand('copy')) {
-      }
-      navigator.clipboard.writeText(c)
-      var x = document.getElementById("snackbar") as HTMLElement;
-      x.className = "show"
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-    }
-    const tweet = () => {
-      const c = text.value?.innerText + '\n\nwar.developerro.com';
-      window.open(`https://twitter.com/intent/tweet?text=${c}`, '_blank')
-    }
-    const facebook = () => {
-      const c = text.value?.innerText + '\n\nwar.developerro.com';
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=https://war.developerro.com`, '_blank')
-    }
-    const whatsapp = () => {
-      const c = text.value?.innerText + '\n\nwar.developerro.com';
-      window.open(`https://wa.me/?text=${c}`, '_blank')
-    }
-    const telegram = () => {
-      const c = text.value?.innerText;
-      window.open(`https://telegram.me/share/url?url=https://war.developerro.com&text=${c}`, '_blank')
-    }
+    const
+      text: Ref<HTMLDivElement | null> = ref(null),
+      toCopy: Ref<HTMLInputElement | null> = ref(null),
+      { win } = mapGetters<ScreensState>('screens'),
+      { ViewConfiguration } = mapActions<ScreensActions>('screens'),
+      { startDate, winDate, players } = mapGetters<GameState>('game'),
+      { numberOfAreas, numberOfPlayers, initialArmies, humanInitialArmies } = mapGetters<ConfigurationState>('configuration'),
+      humanIndex = computed(() => players.value.findIndex(p => p.name === 'You')),
+      player = computed(() => players.value.find(p => p.name === 'You')),
+      time = computed(() => {
+        const diff = winDate.value - startDate.value
+        return dateDiffToString(diff/1000)
+      }),
+      toggleSnackbar = ref(false),
+      getShare = () => {
+        return {
+          url: 'https://war.developerro.com',
+          text: text.value?.innerText + '\n\nwar.developerro.com'
+        }
+      },
+      share = () => {
+        toCopy.value.value = getShare().text
+        toCopy.value.select()
+        document.execCommand('copy')
+
+        navigator.clipboard.writeText(getShare().text)
+
+        toggleSnackbar.value = !toggleSnackbar.value
+      },
+      tweet = () => window.open(`https://twitter.com/intent/tweet?text=${getShare().text}`, '_blank'),
+      facebook = () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${getShare().url}`, '_blank'),
+      whatsapp = () => window.open(`https://wa.me/?text=${getShare().text}`, '_blank'),
+      telegram = () => window.open(`https://telegram.me/share/url?url=${getShare().url}&text=${getShare().text}`, '_blank')
 
     return {
       text,
@@ -128,6 +125,7 @@ export default {
       initialArmies,
       humanInitialArmies,
       ViewConfiguration,
+      toggleSnackbar,
       share,
       tweet,
       facebook,
@@ -139,134 +137,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 @import '../sass/variables';
-
-$particles: 100;
-$width: 500;
-$height: 500;
-
-$box-shadow: ();
-$box-shadow2: ();
-@for $i from 0 through $particles {
-  $box-shadow: $box-shadow,
-               calc(random($width) - ($width / 2)) + px
-               calc(random($height) - ($height / 1.2)) + px
-               hsl(random(360), 100, 50);
-  $box-shadow2: $box-shadow2, 0 0 #fff
-}
-@mixin keyframes ($animationName) {
-    @-webkit-keyframes #{$animationName} {
-        @content;
-    }
-
-    @-moz-keyframes #{$animationName} {
-        @content;
-    }
-
-    @-o-keyframes #{$animationName} {
-        @content;
-    }
-
-    @-ms-keyframes #{$animationName} {
-        @content;
-    }
-
-    @keyframes #{$animationName} {
-        @content;
-    }
-}
-
-@mixin animation-delay ($settings) {
-    -moz-animation-delay: $settings;
-    -webkit-animation-delay: $settings;
-    -o-animation-delay: $settings;
-    -ms-animation-delay: $settings;
-    animation-delay: $settings;
-}
-
-@mixin animation-duration ($settings) {
-    -moz-animation-duration: $settings;
-    -webkit-animation-duration: $settings;
-    -o-animation-duration: $settings;
-    -ms-animation-duration: $settings;
-    animation-duration: $settings;
-}
-
-@mixin animation ($settings) {
-    -moz-animation: $settings;
-    -webkit-animation: $settings;
-    -o-animation: $settings;
-    -ms-animation: $settings;
-    animation: $settings;
-}
-
-@mixin transform ($settings) {
-    transform: $settings;
-    -moz-transform: $settings;
-    -webkit-transform: $settings;
-    -o-transform: $settings;
-    -ms-transform: $settings;
-}
-
-.pyro {
-    pointer-events: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-}
-
-.pyro > .before, .pyro > .after {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  box-shadow: $box-shadow2;
-  @include animation((1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards));
-}
-
-.pyro > .after {
-  @include animation-delay((1.25s, 1.25s, 1.25s));
-  @include animation-duration((1.25s, 1.25s, 6.25s));
-}
-
-@include keyframes(bang) {
-  to {
-    box-shadow:$box-shadow;
-  }
-}
-
-@include keyframes(gravity)  {
-  to {
-    @include transform(translateY(200px));
-    opacity: 0;
-  }
-}
-
-@include keyframes(position) {
-  0%, 19.9% {
-    margin-top: 10%;
-    margin-left: 40%;
-  }
-  20%, 39.9% {
-    margin-top: 40%;
-    margin-left: 30%;
-  }
-  40%, 59.9% {
-    margin-top: 20%;
-    margin-left: 70%
-  }
-  60%, 79.9% {
-    margin-top: 30%;
-    margin-left: 20%;
-  }
-  80%, 99.9% {
-    margin-top: 30%;
-    margin-left: 80%;
-  }
-}
 
 button {
     margin-top: 0.5em !important;
@@ -309,49 +180,5 @@ h1 {
       margin-right: 0em;
     }
   }
-}
-#snackbar {
-  visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -150px; /* Divide value of min-width by 2 */
-  background-color: $text; /* Black background color */
-  color: $background; /* White text color */
-  text-align: center; /* Centered text */
-  border-radius: 2px; /* Rounded borders */
-  padding: 16px; /* Padding */
-  position: fixed; /* Sit on top of the screen */
-  z-index: 1; /* Add a z-index if needed */
-  left: 50%; /* Center the snackbar */
-  bottom: 30px; /* 30px from the bottom */
-}
-
-/* Show the snackbar when clicking on a button (class added with JavaScript) */
-#snackbar.show {
-  visibility: visible; /* Show the snackbar */
-  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-  However, delay the fade out process for 2.5 seconds */
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-/* Animations to fade the snackbar in and out */
-@-webkit-keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
-}
-
-@keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
-}
-
-@-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
-}
-
-@keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
 }
 </style>
