@@ -3,5 +3,7 @@ node_modules
 dist
 dist-ssr
 *.local
-src/**/*.js
-src/**/*.js.map
+*.js
+*.js.map
+obj
+bin
