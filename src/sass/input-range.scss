@@ -1,24 +1,24 @@
 @import "variables";
 
-$track-color: $shadow;
-$thumb-color: $accent;
+$track-color: $text;
+$thumb-color: $text;
 
 $thumb-radius: 10px;
 $thumb-height: 20px;
 $thumb-width: 20px;
 $thumb-shadow-size: 0px;
 $thumb-shadow-blur: 0px;
-$thumb-shadow-color: #111;
+$thumb-shadow-color: $shadow;
 $thumb-border-width: 1px;
-$thumb-border-color: $lines;
+$thumb-border-color: $text;
 
 $track-width: 100%;
 $track-height: 10px;
 $track-shadow-size: 0px;
 $track-shadow-blur: 0px;
-$track-shadow-color: #222;
+$track-shadow-color: $shadow;
 $track-border-width: 0px;
-$track-border-color: $lines;
+$track-border-color: $text;
 
 $track-radius: 5px;
 $contrast: 5%;

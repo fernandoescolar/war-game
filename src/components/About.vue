@@ -51,7 +51,7 @@ const buyMeABeer = () => {
     height: 40px;
     border-radius: 12px;
     background-color: #fd0;
-    color: #000;
+    color: #fff;
     border: none;
     padding: 0 20px;
     line-height: 20px;

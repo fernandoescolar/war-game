@@ -76,9 +76,9 @@ p {
     margin-top: 1em !important;
     height: 40px;
     border-radius: 12px;
-    background-color: $accent;
-    color: #000;
-    border: none;
+    border: 1px solid $accent;
+    /*background-color: $accent;*/
+    color: $accent;
     padding: 0 20px;
     line-height: 20px;
     font-family: $font-family;

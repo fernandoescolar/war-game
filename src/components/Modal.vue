@@ -38,6 +38,8 @@ const { ViewGame } = mapActions<ScreensActions>('screens')
 </script>
 
 <style lang="scss">
+@import "../sass/variables";
+
 .modal {
   position: fixed;
   top: 0px;
@@ -69,9 +71,9 @@ const { ViewGame } = mapActions<ScreensActions>('screens')
     max-width: 500px;
     height: calc(100% - 2.8em);
     margin: 0.4em;
-    background-color: white;
+    background-color: $background;
     border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 10px $shadow;
     padding: 1em;
 
     .header {
