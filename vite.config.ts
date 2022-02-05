@@ -14,8 +14,8 @@ const pwaOptions: Partial<VitePWAOptions> = {
   manifest: {
     name: 'Dev_Wars',
     short_name: 'dev_wars',
-    theme_color: '#fffcf9',
-    background_color: '#fffcf9',
+    theme_color: '#577590',
+    background_color: '#577590',
     display: 'standalone',
     orientation: 'portrait',
     categories: ["game", "strategy", "war"],
