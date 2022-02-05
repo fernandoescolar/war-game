@@ -143,9 +143,8 @@ button {
     margin-top: 0.5em !important;
     height: 40px;
     border-radius: 12px;
-    background-color: $accent;
-    color: #000;
-    border: none;
+    border: 1px solid $accent;
+    color: $accent;
     padding: 0 20px;
     line-height: 20px;
     font-family: $font-family;

@@ -36,6 +36,7 @@
           </p>
           <p v-for="line, index in lines" :key="index">
               <span v-html="line"></span>
+              <hr />
           </p>
           <p>
             <a href="#" @click="showHistory = false">hide history</a>
