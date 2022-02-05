@@ -6,7 +6,10 @@ import Board from "./Board";
 import HumanPlayer from "./HumanPlayer";
 import CPUPlayer from "./CPUPlayer";
 import IInput from "../IInput";
+import Ai from "../ai/Ai";
 import SimpleAi from "../ai/SimpleAi";
+import DefaultAi from "../ai/DefaultAi";
+import BetterAi from "../ai/BetterAi";
 
 export default class Game {
     players: Player[] = [];
@@ -83,7 +86,7 @@ export default class Game {
         return Array(this.configuration.numberOfPlayers).fill(null).map((_, index) => {
             const color = this.configuration.colors.players[index];
             return index === 0 ? new HumanPlayer(index, color, this.input)
-                            : new CPUPlayer(index, color, new SimpleAi(this));
+                            : new CPUPlayer(index, color, this.getAiPlayer(index));
         });
     }
 
@@ -107,5 +110,16 @@ export default class Game {
 
         this.players.sort(() => Math.random() - 0.5);
         this.players.forEach((player, index) => player.id = index);
+    }
+
+    private getAiPlayer(index: number): Ai {
+        switch (index) {
+            case 1:
+                return new SimpleAi(this);
+            case 2:
+                return new DefaultAi(this);
+            default:
+                return new BetterAi(this);
+        }
     }
 }
