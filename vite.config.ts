@@ -8,6 +8,9 @@ const pwaOptions: Partial<VitePWAOptions> = {
   mode: 'development',
   base: '/',
   includeAssets: ['robots.txt', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png'],
+  workbox: {
+    globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,otf,ttf}']
+  },
   manifest: {
     name: 'Dev_Wars',
     short_name: 'dev_wars',
